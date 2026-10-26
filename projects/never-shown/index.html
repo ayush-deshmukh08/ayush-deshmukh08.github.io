@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>I Never Showed It the Task — Ayush Deshmukh</title>
 <meta name="description" content="I filmed only single skills with a phone. A reward inferred from those clips trains an RL teacher, which is distilled into a vision-language-action model that carries out multi-step instructions nobody demonstrated.">
-<link rel="canonical" href="https://theundercover01.github.io/ayushdeshmukh/projects/never-shown/">
+<link rel="canonical" href="https://ayush-deshmukh08.github.io/projects/never-shown/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="I Never Showed It the Task — Ayush Deshmukh">
 <meta property="og:description" content="Phone clips of single skills → a reward inferred from them → an RL teacher → a VLA that composes tasks it never saw.">
-<meta property="og:url" content="https://theundercover01.github.io/ayushdeshmukh/projects/never-shown/">
-<meta property="og:image" content="https://theundercover01.github.io/ayushdeshmukh/projects/never-shown/img/cover.jpg">
+<meta property="og:url" content="https://ayush-deshmukh08.github.io/projects/never-shown/">
+<meta property="og:image" content="https://ayush-deshmukh08.github.io/projects/never-shown/img/cover.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -171,7 +171,7 @@
 <p class="paper-text">For example, the robot gets this sentence once, at the start:</p>
 <p class="sentence"><span class="cmd">pick up the cube</span>, then <span class="cmd">put the cube on the cylinder</span>, then <span class="cmd">pick up the cube</span>, then <span class="cmd">put the cube on the target</span>, then <span class="cmd">pick up the cylinder</span>, then <span class="cmd">put the cylinder on the cube</span></p>
 <p class="paper-text">Each part between the commas is a <strong>command</strong>: one skill (pick up, put down, push) applied to one object, plus where it goes when the skill needs a destination, e.g. <em>put the cube on the cylinder</em>. This sentence has six. Nothing splits it up, and the simulator never tells the policy which command it's on.</p>
-<div class="bigplay"><a href="https://theundercover01.github.io/ayushdeshmukh/projects/play/">▶&nbsp; Play with the robot live</a></div>
+<div class="bigplay"><a href="https://ayush-deshmukh08.github.io/projects/play/">▶&nbsp; Play with the robot live</a></div>
 
 <div class="note why"><b>Contents</b></div>
 <ul>
@@ -276,7 +276,7 @@
 </div>
 <div class="center"><sub>Left: <b>Cube to the target</b> (2 commands, 2×). Right: <b>Cube on the can</b> (2 commands, 2×).</sub></div>
 
-<div class="note why"><b>Play with it.</b> The robot runs live on the <a href="https://theundercover01.github.io/ayushdeshmukh/projects/play/">play page</a> when my GPU is on. Three games:</div>
+<div class="note why"><b>Play with it.</b> The robot runs live on the <a href="https://ayush-deshmukh08.github.io/projects/play/">play page</a> when my GPU is on. Three games:</div>
 <ul>
 <li><strong>Sabotage the robot.</strong> It gets a 2-, 4- or 6-step task and you get one sabotage per round: knock the object away or write a fake "(done)". You win if the task isn't really done when it stops. Winning takes understanding how its memory works.</li>
 <li><strong>Tic-tac-toe.</strong> You're O; the robot has to physically place each X. This robot is a fine-tune of an earlier student, first on the nine board squares, then on 2,000 recordings with flat X / O pieces on the board (had to add extra recordings cuz the perception kept messing up the robot actions).</li>
