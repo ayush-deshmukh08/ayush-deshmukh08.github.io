@@ -178,7 +178,27 @@ tr.hero td{font-weight:700}
     <li>H1: I never label anything. The cube's path in my clip becomes a score the robot tries to match. First I tried a vocabulary of motions copied from the clips; it couldn't stack (about 1% vs 98%), so the clips became the reward instead.</li>
     <li>H2: first I trained on each full task. But then it has seen the task, which defeats the point. So: practise one or two steps, ask for six.</li>
     <li>H3: from the camera, after step 2 can look like after step 4, so it looped. Instead of a planner, it writes "(done)" next to each finished command in its own instruction.</li>
-    <li>Next: how I built it.</li>
+    <li>Next: how the clips become the reward.</li>
+  </ul></aside>
+</section>
+
+<section class="step" data-sec="Reward" data-t="90">
+  <div class="kicker">H1 · Reward</div>
+  <h2>How my clips become the reward</h2>
+  <div class="vid" style="width:1400px;margin-top:22px"><video src="videos/clip_to_template.mp4" poster="videos/clip_to_template.jpg" muted loop playsinline preload="auto"></video></div>
+  <div class="cap" style="margin-top:8px"><b style="color:#e8891c">Orange</b>: where the cube went in my clip · <b style="color:#2e8b3a">Green</b>: the path the robot is scored on</div>
+  <div class="row" style="gap:28px;margin-top:26px;align-items:stretch">
+    <div class="card frag grow"><h3>Track the object, not my hand</h3></div>
+    <div class="card frag grow"><h3>One path per skill</h3><p class="small muted">push · pick up · put down</p></div>
+    <div class="card frag grow"><h3>Reward = progress along it</h3><p class="small muted">staying within 3 cm</p></div>
+  </div>
+  <aside class="notes"><ul>
+    <li>Markers on the cube, the can and the table. In every frame I know where each object is. My hand doesn't matter, so the robot's body doesn't have to match mine.</li>
+    <li>Orange is the real cube path from the clip; green is the clean path averaged from my clips. 3 cm is how much my own clips wobble around it.</li>
+    <li>The command picks the path: "put the cube on the cylinder" = put-down path, applied to the cube, ending on the can. Chaining commands = switching paths. Same formula for every command.</li>
+    <li>Why not write rewards by hand? I did first. The robot cheated every one: flicked the gripper at the release point to farm reward, pushed the cube instead of lifting it.</li>
+    <li>Two fixes on top: a short path from the hand to the object, so it finds the object at all (nothing learned for 504 iterations without it). And a penalty for lifting during a push: it was carrying 85 of 100 pushes, after the fix 0.</li>
+    <li>Next: who learns from this reward (the teacher).</li>
   </ul></aside>
 </section>
 
