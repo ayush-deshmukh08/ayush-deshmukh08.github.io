@@ -219,15 +219,15 @@ tr.hero td{font-weight:700}
   <div class="card frag" style="margin-top:44px;padding:24px 30px">
     <h3>Why not just fine-tune the VLA on my clips?</h3>
     <div class="row" style="gap:40px;margin-top:8px">
-      <p class="grow">My clips are a <b>hand</b>, not a robot. There are no robot actions to copy.</p>
-      <p class="grow">43 clips is <b>tiny</b> for a VLA.</p>
-      <p class="grow">Even single-skill <b>robot</b> clips: every chained task <b>0</b>.</p>
+      <p class="grow">43 clips is <b>tiny</b>. I want unlimited data.</p>
+      <p class="grow">The VLA needs the <b>same two views</b> every time: front + wrist. My phone can't film that.</p>
+      <p class="grow">A teacher in sim gives me <b>any data, in any form</b> I want.</p>
     </div>
     <p style="margin-top:18px"><span class="hl"><b>So the clips say <i>what</i> to do, RL finds <i>how</i>, and the teacher makes as much robot data as I want.</b></span></p>
   </div>
   <aside class="notes"><ul>
     <li>Walk the five steps left to right. Each hypothesis gets answered at its step.</li>
-    <li>Why this shape: the obvious move is to fine-tune the VLA on my videos. Three problems. The clips show my hand, not a robot arm, so there are no robot actions in them. 43 clips is very little. And even when I gave it the easy version (the same single skills, but done by a scripted robot in sim, so real robot actions exist), it scored push 16, pick-up 0, every combined task 0. Copying single skills doesn't give you chains.</li>
+    <li>Why this shape: the obvious move is to fine-tune the VLA on my videos. But 43 clips is tiny, and I wanted unlimited data. The VLA also needs consistent input: the same front camera and wrist camera every time, which I can't get from a phone. A teacher in simulation can record as many episodes as I want, from any layout, with exactly those two cameras.</li>
     <li>So I split the job. The clips only say what should happen to the object. RL, with 16,384 simulated robots that see exact positions, finds how to do it. That's cheap. Then the teacher records as many robot episodes as I want (I used 4,500) and the VLA learns from those, using only cameras and the sentence.</li>
     <li>Next: step 1, the data.</li>
   </ul></aside>
