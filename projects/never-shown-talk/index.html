@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>I Never Showed It the Task</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f1e7; --paper:#fffdf8; --ink:#211d19; --muted:#726657; --line:#d9cfbd;
+  --accent:#e8bd2a; --good:#2f7d4f; --bad:#b4432f; --frame:#e7dfcf;
+  --font:"Space Grotesk","Helvetica Neue",Arial,"DejaVu Sans",sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--frame);overflow:hidden;font-family:var(--font);color:var(--ink)}
+#stage{position:absolute;left:50%;top:50%;width:1600px;height:900px;background:var(--bg);overflow:hidden;transform-origin:center center}
+.step{position:absolute;inset:0;padding:64px 90px 84px;display:none;flex-direction:column}
+.step.active{display:flex}
+.notes{display:none}
+
+/* type */
+.kicker{font-size:21px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+h1{font-size:76px;line-height:1;margin:14px 0 14px;letter-spacing:-.02em}
+h2{font-size:54px;line-height:1.05;margin:10px 0 30px;letter-spacing:-.015em}
+h3{font-size:30px;margin:0 0 10px}
+p,li{font-size:28px;line-height:1.35;margin:0}
+.sub{font-size:30px;color:var(--muted)}
+.muted{color:var(--muted)}
+.small{font-size:22px}
+.hl{background:var(--accent);padding:0 .15em;border-radius:3px}
+.big{font-size:64px;font-weight:700;line-height:1;letter-spacing:-.02em}
+.huge{font-size:120px;font-weight:700;line-height:.9;letter-spacing:-.03em}
+.good{color:var(--good)} .bad{color:var(--bad)}
+b,strong{font-weight:700}
+
+/* boxes */
+.card{background:var(--paper);border:3px solid var(--ink);border-radius:10px;box-shadow:7px 7px 0 var(--ink);padding:26px 30px}
+.vid{border:3px solid var(--ink);border-radius:10px;box-shadow:7px 7px 0 var(--ink);background:#111;overflow:hidden;position:relative}
+.vid video{display:block;width:100%;height:auto;cursor:pointer}
+.vid.fixed video{height:100%;object-fit:contain}
+/* video controls: show on hover, and stay visible while paused */
+.vctl{position:absolute;left:0;right:0;bottom:0;display:flex;align-items:center;gap:12px;padding:16px 14px 10px;background:linear-gradient(transparent,rgba(0,0,0,.78));opacity:0;transition:opacity .2s}
+.vid:hover .vctl,.vid.paused .vctl{opacity:1}
+.vctl button{all:unset;cursor:pointer;color:#fff;font:700 18px var(--font);width:26px;text-align:center}
+.vctl input{flex:1;min-width:0;accent-color:var(--accent);cursor:pointer;margin:0}
+.vctl .tm{color:#fff;font:500 15px var(--font);font-variant-numeric:tabular-nums;white-space:nowrap}
+.vid.fixed .vctl .tm{display:none}
+.cap{font-size:22px;color:var(--muted);margin-top:14px;line-height:1.3}
+.cap b{color:var(--ink)}
+.chip{display:inline-block;border:2px solid var(--ink);border-radius:999px;padding:4px 14px;font-size:20px;font-weight:700;background:var(--paper)}
+.row{display:flex;gap:34px;align-items:flex-start}
+.grow{flex:1;min-width:0}
+.center{align-items:center;justify-content:center;text-align:center}
+.frag{opacity:0;transform:translateY(8px);transition:opacity .25s,transform .25s}
+.frag.on{opacity:1;transform:none}
+
+/* the sentence with (done) marks */
+.sent{font-size:31px;line-height:1.55}
+.sent .d{color:var(--muted);text-decoration:line-through;text-decoration-thickness:2px}
+.sent .tag{font-weight:700;background:var(--ink);color:var(--bg);padding:1px 8px;border-radius:4px;font-size:.8em;margin-left:4px}
+.sent .now{background:var(--accent);font-weight:700;padding:0 6px;border-radius:3px}
+.sent .arrow{font-weight:700}
+
+/* tables */
+table{border-collapse:collapse;width:100%}
+th{font-size:20px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);text-align:left;padding:0 14px 10px;border-bottom:3px solid var(--ink)}
+td{font-size:26px;padding:9px 14px;border-bottom:1.5px solid var(--line);vertical-align:middle}
+td.n{text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
+tr.ood td:first-child::after{content:"never trained on this length";margin-left:12px;font-size:16px;font-weight:700;border:2px solid var(--ink);border-radius:999px;padding:1px 9px;vertical-align:3px;background:var(--accent)}
+tr.hero td{font-weight:700}
+.bar{height:22px;background:var(--line);border-radius:4px;position:relative;width:330px}
+.bar i{position:absolute;left:0;top:0;bottom:0;background:var(--ink);border-radius:4px}
+.bar.t i{background:var(--muted);opacity:.55}
+
+/* footer */
+#foot{position:absolute;left:90px;right:90px;bottom:26px;display:flex;align-items:center;gap:22px;font-size:17px;color:var(--muted);z-index:5}
+#secs{display:flex;gap:18px;flex:1}
+#secs span{padding-top:6px;border-top:3px solid var(--line)}
+#secs span.on{color:var(--ink);font-weight:700;border-top-color:var(--ink)}
+#count{font-variant-numeric:tabular-nums}
+#blank{position:absolute;inset:0;background:var(--bg);z-index:20;display:none}
+#hint{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);background:var(--ink);color:var(--bg);font-size:14px;padding:6px 14px;border-radius:999px;transition:opacity .6s;z-index:30}
+
+/* part 2 headings */
+.p2 h1{font-size:96px;margin:18px 0 0}
+.p2 .kicker{font-size:24px}
+</style>
+</head>
+<body>
+<div id="stage">
+
+<!-- ============================ PART 1 ============================ -->
+
+<section class="step" data-sec="Intro" data-t="45">
+  <div class="kicker">Ayush Deshmukh · Robot learning take-home</div>
+  <h1>I Never Showed It the Task</h1>
+  <div class="sub">Composing multi-step manipulation from single-skill phone videos</div>
+  <div class="row" style="margin-top:34px;align-items:flex-end">
+    <div class="vid" style="width:940px"><video src="videos/restack_6of6.mp4" poster="videos/restack_6of6.jpg" muted loop playsinline preload="auto"></video></div>
+    <div class="grow">
+      <div class="big">6 commands</div>
+      <p style="margin-top:10px">from one sentence, in order.</p>
+      <p class="hl" style="display:inline-block;margin-top:26px;font-weight:700">Trained on at most 2.</p>
+      <div class="cap">Front camera + wrist camera · 3× speed</div>
+    </div>
+  </div>
+  <aside class="notes"><ul>
+    <li>Let it play. Read nothing off the slide.</li>
+    <li>"One sentence, six commands, never trained on more than two."</li>
+    <li>Next: the problem I set myself.</li>
+  </ul></aside>
+</section>
+
+<section class="step" data-sec="Problem" data-t="75">
+  <div class="kicker">The problem</div>
+  <h2 style="max-width:1250px">Can a robot that only learns single skills do long tasks it was never shown?</h2>
+  <div class="row" style="align-items:stretch;gap:40px">
+    <div>
+      <h3>What I show it</h3>
+      <div style="display:grid;grid-template-columns:340px 340px;gap:16px 18px">
+        <div><div class="vid"><video src="videos/clip_lift.mp4" poster="videos/clip_lift.jpg" muted loop playsinline preload="auto"></video></div><div class="cap" style="margin-top:6px"><b>Pick up</b></div></div>
+        <div><div class="vid"><video src="videos/clip_drop.mp4" poster="videos/clip_drop.jpg" muted loop playsinline preload="auto"></video></div><div class="cap" style="margin-top:6px"><b>Put down</b></div></div>
+        <div><div class="vid"><video src="videos/clip_stack.mp4" poster="videos/clip_stack.jpg" muted loop playsinline preload="auto"></video></div><div class="cap" style="margin-top:6px"><b>Put on the other object</b></div></div>
+        <div><div class="vid"><video src="videos/clip_push.mp4" poster="videos/clip_push.jpg" muted loop playsinline preload="auto"></video></div><div class="cap" style="margin-top:6px"><b>Push</b></div></div>
+      </div>
+      <p class="small muted" style="margin-top:12px">My phone · one skill per clip · never two in a row</p>
+    </div>
+    <div class="big" style="align-self:center;font-size:80px">→</div>
+    <div class="card frag grow" style="align-self:center">
+      <h3>What I ask it</h3>
+      <ol style="margin:6px 0 0;padding-left:34px;display:flex;flex-direction:column;gap:6px">
+        <li style="font-size:25px">pick up the cube</li>
+        <li style="font-size:25px">put the cube on the cylinder</li>
+        <li style="font-size:25px">pick up the cube</li>
+        <li style="font-size:25px">put the cube on the target</li>
+        <li style="font-size:25px">pick up the cylinder</li>
+        <li style="font-size:25px">put the cylinder on the cube</li>
+      </ol>
+      <p class="small" style="margin-top:16px"><span class="hl"><b>One sentence. Never seen as a whole.</b></span></p>
+    </div>
+  </div>
+  <aside class="notes"><ul>
+    <li>The brief: my own data, a robot in sim, a VLA. "Not standard solutions, how you think."</li>
+    <li>Standard answer = film the task, train the robot to copy it. That only tests copying.</li>
+    <li>People don't learn "move the cup to the shelf". They learn pick up and put down; the task is just the two in a row.</li>
+    <li>So I filmed only single skills, never two back to back. (Point at the clips.)</li>
+    <li>→ reveal: then I ask for a long sentence it has never seen. If it does it, it composed something nobody showed it.</li>
+    <li>Next: what I expected to happen (hypotheses).</li>
+  </ul></aside>
+</section>
+
+
+<div id="blank"></div>
+<div id="foot"><div id="secs"></div><div id="count"></div></div>
+</div>
+<div id="hint">→ / Space next · ← back · N notes · F full screen · K pause · J / L ∓1 s · , / . frame · R restart</div>
+
+<script>
+(function(){
+  const stage = document.getElementById('stage');
+  const steps = [...document.querySelectorAll('.step')];
+  const secNames = [...new Set(steps.map(s => s.dataset.sec))];
+  const secsEl = document.getElementById('secs');
+  secsEl.innerHTML = secNames.map(n => '<span>' + n + '</span>').join('');
+  const cum = []; steps.reduce((a, s, k) => (cum[k] = a + (+s.dataset.t || 0)), 0);
+
+  let cur = 0, frag = 0, t0 = null, popup = null;
+
+  function fit(){
+    const s = Math.min(innerWidth / 1600, innerHeight / 900);
+    stage.style.transform = 'translate(-50%,-50%) scale(' + s + ')';
+  }
+  addEventListener('resize', fit); fit();
+
+  const frags = k => [...steps[k].querySelectorAll('.frag')];
+
+  // ---- videos: scrub bar per video, only the current step plays ----
+  const vids = [...document.querySelectorAll('.vid video')];
+  const curVids = () => [...steps[cur].querySelectorAll('video')];
+  const mmss = s => Math.floor(s / 60) + ':' + (s % 60).toFixed(1).padStart(4, '0');
+  const toggle = v => v.paused ? v.play().catch(() => {}) : v.pause();
+  function syncUI(v){
+    v.parentElement.classList.toggle('paused', v.paused);
+    v._ui.btn.textContent = v.paused ? '▶' : '❚❚';
+  }
+  vids.forEach(v => {
+    const bar = document.createElement('div');
+    bar.className = 'vctl';
+    bar.innerHTML = '<button title="Play / pause (K)">❚❚</button><input type="range" min="0" max="1000" value="0" tabindex="-1"><span class="tm"></span>';
+    v.parentElement.appendChild(bar);
+    const [btn, rng, tm] = bar.children;
+    v._ui = { btn, rng, tm };
+    btn.addEventListener('click', e => { e.stopPropagation(); toggle(v); });
+    let was = false;
+    rng.addEventListener('pointerdown', () => { v._drag = true; was = !v.paused; v.pause(); });
+    rng.addEventListener('input', () => { if (v.duration) v.currentTime = rng.value / 1000 * v.duration; });
+    rng.addEventListener('pointerup', () => { v._drag = false; if (was) v.play().catch(() => {}); rng.blur(); });
+    v.addEventListener('play', () => syncUI(v));
+    v.addEventListener('pause', () => syncUI(v));
+  });
+  (function loop(){
+    curVids().forEach(v => {
+      if (!v.duration || !v._ui) return;
+      if (!v._drag) v._ui.rng.value = v.currentTime / v.duration * 1000;
+      v._ui.tm.textContent = mmss(v.currentTime) + ' / ' + mmss(v.duration);
+    });
+    requestAnimationFrame(loop);
+  })();
+  function playStep(){
+    steps.forEach((s, k) => s.querySelectorAll('video').forEach(v => {
+      if (k === cur) { v.currentTime = 0; v.play().catch(() => {}); } else v.pause();
+    }));
+  }
+  function seekAll(dt, pause){
+    curVids().forEach(v => {
+      if (!v.duration) return;
+      if (pause) v.pause();
+      v.currentTime = Math.max(0, Math.min(v.duration - 0.01, v.currentTime + dt));
+    });
+  }
+  // Load each clip into memory so seeking works on any server (python's http.server has no range requests).
+  if (location.protocol.startsWith('http')) vids.forEach(v => {
+    fetch(v.getAttribute('src')).then(r => r.ok ? r.blob() : Promise.reject()).then(b => {
+      const t = v.currentTime, p = !v.paused;
+      v.addEventListener('loadedmetadata', () => { v.currentTime = t; if (p) v.play().catch(() => {}); }, { once: true });
+      v.src = URL.createObjectURL(b);
+    }).catch(() => {});
+  });
+
+  function render(){
+    steps.forEach((s, k) => s.classList.toggle('active', k === cur));
+    frags(cur).forEach((f, k) => f.classList.toggle('on', k < frag));
+    const sec = steps[cur].dataset.sec;
+    [...secsEl.children].forEach(c => c.classList.toggle('on', c.textContent === sec));
+    document.getElementById('count').textContent = (cur + 1) + ' / ' + steps.length;
+    history.replaceState(null, '', '#' + (cur + 1));
+    updatePopup();
+  }
+
+  function go(k, showAll){
+    k = Math.max(0, Math.min(steps.length - 1, k));
+    cur = k; frag = showAll ? frags(k).length : 0;
+    render();
+    playStep();
+  }
+  function next(){
+    if (t0 === null) t0 = Date.now();
+    if (frag < frags(cur).length) { frag++; render(); } else go(cur + 1);
+  }
+  function prev(){
+    if (frag > 0) { frag--; render(); } else go(cur - 1, true);
+  }
+
+  const fmt = s => { s = Math.max(0, Math.round(s)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
+  const title = k => { const s = steps[k]; if (!s) return '(end)'; const h = s.querySelector('h1,h2'); return (k + 1) + '. ' + (h ? h.textContent : ''); };
+
+  function openPopup(){
+    if (popup && !popup.closed) { popup.focus(); return; }
+    popup = window.open('', 'vla-presenter', 'width=980,height=760');
+    if (!popup) return;
+    popup.document.write('<!doctype html><title>Presenter</title><style>' +
+      'body{margin:0;padding:26px 32px;font-family:"Space Grotesk",Arial,sans-serif;background:#211d19;color:#f6f1e7}' +
+      '#clock{display:flex;gap:40px;font-size:40px;font-weight:700;font-variant-numeric:tabular-nums}' +
+      '#clock small{display:block;font-size:14px;font-weight:400;letter-spacing:.1em;text-transform:uppercase;color:#b8ab97}' +
+      '#cur{font-size:30px;font-weight:700;margin:26px 0 10px}#frag{color:#e8bd2a;font-size:18px}' +
+      '#notes{font-size:26px;line-height:1.45}#notes li{margin:6px 0}' +
+      '#next{margin-top:26px;padding-top:14px;border-top:1px solid #4a4239;color:#b8ab97;font-size:20px}' +
+      '.late{color:#ff8a6b}.ok{color:#8fd19e}</style>' +
+      '<div id="clock"><div><small>Elapsed</small><span id="el">0:00</span></div><div><small>Target by end of step</small><span id="tg"></span></div><div><small>This step</small><span id="st"></span></div></div>' +
+      '<div id="cur"></div><div id="frag"></div><div id="notes"></div><div id="next"></div>');
+    popup.document.close();
+    popup.document.addEventListener('keydown', onKey);
+    updatePopup();
+  }
+  function updatePopup(){
+    if (!popup || popup.closed) return;
+    const d = popup.document, n = steps[cur].querySelector('.notes');
+    d.getElementById('cur').textContent = title(cur);
+    const fr = frags(cur).length;
+    d.getElementById('frag').textContent = fr ? ('reveals: ' + frag + ' / ' + fr) : '';
+    d.getElementById('notes').innerHTML = n ? n.innerHTML : '';
+    d.getElementById('next').textContent = 'Next: ' + title(cur + 1);
+    d.getElementById('tg').textContent = fmt(cum[cur]);
+    d.getElementById('st').textContent = fmt(+steps[cur].dataset.t || 0);
+    tick();
+  }
+  function tick(){
+    if (!popup || popup.closed) return;
+    const el = t0 === null ? 0 : (Date.now() - t0) / 1000;
+    const e = popup.document.getElementById('el');
+    e.textContent = fmt(el);
+    e.className = el > cum[cur] + 20 ? 'late' : 'ok';
+  }
+  setInterval(tick, 1000);
+
+  function onKey(e){
+    if (e.target && e.target.tagName === 'INPUT') return;
+    const k = e.key;
+    const kl = k.toLowerCase();
+    if (kl === 'k') { const vs = curVids(), any = vs.some(v => !v.paused); vs.forEach(v => any ? v.pause() : v.play().catch(() => {})); return; }
+    if (kl === 'j') return seekAll(-1);
+    if (kl === 'l') return seekAll(1);
+    if (k === ',') return seekAll(-1 / 25, true);
+    if (k === '.') return seekAll(1 / 25, true);
+    if (kl === 'r') { curVids().forEach(v => { v.currentTime = 0; v.play().catch(() => {}); }); return; }
+    if (['ArrowRight', 'PageDown', ' ', 'Enter'].includes(k)) { e.preventDefault(); next(); }
+    else if (['ArrowLeft', 'PageUp', 'Backspace'].includes(k)) { e.preventDefault(); prev(); }
+    else if (k === 'Home') go(0);
+    else if (k === 'End') go(steps.length - 1, true);
+    else if (k === 'n' || k === 'N') openPopup();
+    else if (k === 'f' || k === 'F') { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen(); }
+    else if (k === 'b' || k === 'B') { const b = document.getElementById('blank'); b.style.display = b.style.display === 'block' ? 'none' : 'block'; }
+    else if (k === 't' || k === 'T') { t0 = Date.now(); tick(); }
+    else if (/^[1-9]$/.test(k)) { const i = steps.findIndex(s => s.dataset.sec === secNames[+k - 1]); if (i >= 0) go(i); }
+  }
+  document.addEventListener('keydown', onKey);
+  document.addEventListener('click', e => {
+    const v = e.target.closest('video'); if (!v) return;
+    v.paused ? v.play() : v.pause();
+  });
+
+  setTimeout(() => { document.getElementById('hint').style.opacity = 0; }, 5000);
+  const h = parseInt(location.hash.slice(1), 10);
+  go(isNaN(h) ? 0 : h - 1, location.search.includes('all'));
+})();
+</script>
+</body>
+</html>
