@@ -178,12 +178,103 @@ tr.hero td{font-weight:700}
     <li>H1: I never label anything. The cube's path in my clip becomes a score the robot tries to match. First I tried a vocabulary of motions copied from the clips; it couldn't stack (about 1% vs 98%), so the clips became the reward instead.</li>
     <li>H2: first I trained on each full task. But then it has seen the task, which defeats the point. So: practise one or two steps, ask for six.</li>
     <li>H3: from the camera, after step 2 can look like after step 4, so it looped. Instead of a planner, it writes "(done)" next to each finished command in its own instruction.</li>
-    <li>Next: how the clips become the reward.</li>
+    <li>Next: the plan, five steps.</li>
+  </ul></aside>
+</section>
+
+<section class="step" data-sec="Method" data-t="90">
+  <h2>The plan: five steps</h2>
+  <div class="row" style="gap:14px;margin-top:30px;align-items:stretch">
+      <div class="card frag" style="flex:1;position:relative;padding:34px 22px 22px;text-align:center">
+        <div style="position:absolute;top:-22px;left:50%;transform:translateX(-50%);width:44px;height:44px;border-radius:50%;background:var(--accent);border:3px solid var(--ink);font-weight:800;font-size:22px;line-height:38px">1</div>
+        <h3 style="font-size:27px">Film single skills</h3>
+        <p class="small muted">push · pick up · put down</p>
+        
+      </div>      <div style="align-self:center;font-size:34px;font-weight:700">→</div>
+      <div class="card frag" style="flex:1;position:relative;padding:34px 22px 22px;text-align:center">
+        <div style="position:absolute;top:-22px;left:50%;transform:translateX(-50%);width:44px;height:44px;border-radius:50%;background:var(--accent);border:3px solid var(--ink);font-weight:800;font-size:22px;line-height:38px">2</div>
+        <h3 style="font-size:27px">Clips → reward</h3>
+        <p class="small muted">where the object goes</p>
+        <div class="chip" style="margin-top:12px">H1</div>
+      </div>      <div style="align-self:center;font-size:34px;font-weight:700">→</div>
+      <div class="card frag" style="flex:1;position:relative;padding:34px 22px 22px;text-align:center">
+        <div style="position:absolute;top:-22px;left:50%;transform:translateX(-50%);width:44px;height:44px;border-radius:50%;background:var(--accent);border:3px solid var(--ink);font-weight:800;font-size:22px;line-height:38px">3</div>
+        <h3 style="font-size:27px">Train an RL teacher</h3>
+        <p class="small muted">1–2 commands at a time</p>
+        <div class="chip" style="margin-top:12px">H2</div>
+      </div>      <div style="align-self:center;font-size:34px;font-weight:700">→</div>
+      <div class="card frag" style="flex:1;position:relative;padding:34px 22px 22px;text-align:center">
+        <div style="position:absolute;top:-22px;left:50%;transform:translateX(-50%);width:44px;height:44px;border-radius:50%;background:var(--accent);border:3px solid var(--ink);font-weight:800;font-size:22px;line-height:38px">4</div>
+        <h3 style="font-size:27px">Distill into a VLA</h3>
+        <p class="small muted">cameras + the sentence</p>
+        <div class="chip" style="margin-top:12px">H3</div>
+      </div>      <div style="align-self:center;font-size:34px;font-weight:700">→</div>
+      <div class="card frag" style="flex:1;position:relative;padding:34px 22px 22px;text-align:center;background:var(--accent)">
+        <div style="position:absolute;top:-22px;left:50%;transform:translateX(-50%);width:44px;height:44px;border-radius:50%;background:var(--paper);border:3px solid var(--ink);font-weight:800;font-size:22px;line-height:38px">5</div>
+        <h3 style="font-size:27px">Ask for new tasks</h3>
+        <p class="small">up to 8 in a row</p>
+        
+      </div>
+  </div>
+  <div class="card frag" style="margin-top:44px;padding:24px 30px">
+    <h3>Why not just fine-tune the VLA on my clips?</h3>
+    <div class="row" style="gap:40px;margin-top:8px">
+      <p class="grow">My clips are a <b>hand</b>, not a robot. There are no robot actions to copy.</p>
+      <p class="grow">43 clips is <b>tiny</b> for a VLA.</p>
+      <p class="grow">I tried anyway: every chained task <b>0</b>.</p>
+    </div>
+    <p style="margin-top:18px"><span class="hl"><b>So the clips say <i>what</i> to do, RL finds <i>how</i>, and the teacher makes as much robot data as I want.</b></span></p>
+  </div>
+  <aside class="notes"><ul>
+    <li>Walk the five steps left to right. Each hypothesis gets answered at its step.</li>
+    <li>Why this shape: the obvious move is to fine-tune the VLA on my videos. Three problems. The clips show my hand, not a robot arm, so there are no robot actions in them. 43 clips is very little. And I tried it: push 16, pick-up 0, every combined task 0.</li>
+    <li>So I split the job. The clips only say what should happen to the object. RL, with 16,384 simulated robots that see exact positions, finds how to do it. That's cheap. Then the teacher records as many robot episodes as I want (I used 4,500) and the VLA learns from those, using only cameras and the sentence.</li>
+    <li>Next: step 1, the data.</li>
+  </ul></aside>
+</section>
+
+<section class="step" data-sec="Data" data-t="90">
+  <div class="kicker">Step 1 · The data</div>
+  <h2>43 clips from my phone</h2>
+  <div class="row" style="gap:44px;margin-top:10px;align-items:flex-start">
+    <div style="position:relative;width:800px;flex:none">
+      <img src="videos/clip_stack.jpg" alt="My table with the markers" style="width:800px;display:block;border:3px solid var(--ink);border-radius:10px;box-shadow:7px 7px 0 var(--ink)">
+      <div class="chip" style="position:absolute;left:40px;top:262px">target</div>
+      <div class="chip" style="position:absolute;left:300px;top:118px">cube</div>
+      <div class="chip" style="position:absolute;left:258px;top:318px">crisps can</div>
+      <div class="chip" style="position:absolute;left:560px;top:325px">table frame</div>
+    </div>
+    <div class="grow">
+      <table style="width:100%">
+        <tr><td>Push</td><td style="text-align:right"><b>12</b></td></tr>
+        <tr><td>Pick up</td><td style="text-align:right"><b>10</b></td></tr>
+        <tr><td>Put down</td><td style="text-align:right"><b>21</b></td></tr>
+      </table>
+      <p class="small muted" style="margin-top:14px">A marker on every object → where it is, every frame.</p>
+      <div class="card frag" style="margin-top:22px;padding:20px 24px">
+        <h3>What was hard</h3>
+        <ul style="margin:6px 0 0;padding-left:26px;display:flex;flex-direction:column;gap:6px">
+          <li class="small">My hand covers the markers</li>
+          <li class="small">One phone camera: no sense of scale</li>
+          <li class="small">Bad takes thrown out</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <aside class="notes"><ul>
+    <li>Real cube and a crisps can from Tesco (only original flavour lol). I rebuilt the simulator to match: 5 cm cube, 8 cm cylinder.</li>
+    <li>Printed markers: one on each object, one for the target, one big one that fixes the table's position. From those I get each object's position and rotation in every frame. I don't track my hand at all.</li>
+    <li>Filmed long videos and said "start ... end" out loud; speech recognition cut them into clips. Never two skills in one clip.</li>
+    <li>Hard part 1: my hand covers the marker mid-grab. Default detection lost it, so I relaxed the detector settings.</li>
+    <li>Hard part 2: one phone, no depth. I checked the scale with something I knew: a stacked object sits exactly one object-height up. With the right focal length the measured height came out 99% of the real one.</li>
+    <li>Hard part 3: some takes were unusable; 43 kept. Only 4 cube lifts.</li>
+    <li>Before the real clips existed, I built the whole pipeline on stand-in clips cut from a scripted robot, so filming wasn't blocking anything.</li>
+    <li>Next: step 2, turning these clips into a reward.</li>
   </ul></aside>
 </section>
 
 <section class="step" data-sec="Reward" data-t="90">
-  <div class="kicker">H1 · Reward</div>
+  <div class="kicker">Step 2 · The reward · H1</div>
   <h2>How my clips become the reward</h2>
   <div class="vid" style="width:1400px;margin-top:22px"><video src="videos/clip_to_template.mp4" poster="videos/clip_to_template.jpg" muted loop playsinline preload="auto"></video></div>
   <div class="cap" style="margin-top:8px"><b style="color:#e8891c">Orange</b>: where the cube went in my clip · <b style="color:#2e8b3a">Green</b>: the path the robot is scored on</div>
