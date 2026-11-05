@@ -1,9 +1,9 @@
 <!doctype html>
 <html lang="en">
 <head>
+<meta name="robots" content="noindex, nofollow, noarchive">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex, nofollow, noarchive">
 <title>I Never Showed It the Task</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -126,7 +126,6 @@ tr.hero td{font-weight:700}
         <div><div class="vid"><video src="videos/clip_stack.mp4" poster="videos/clip_stack.jpg" muted loop playsinline preload="auto"></video></div><div class="cap" style="margin-top:6px"><b>Put on the other object</b></div></div>
         <div><div class="vid"><video src="videos/clip_push.mp4" poster="videos/clip_push.jpg" muted loop playsinline preload="auto"></video></div><div class="cap" style="margin-top:6px"><b>Push</b></div></div>
       </div>
-      <p class="small muted" style="margin-top:12px">My phone · one skill per clip · never two in a row</p>
     </div>
     <div class="big" style="align-self:center;font-size:80px">→</div>
     <div class="card frag grow" style="align-self:center">
@@ -148,10 +147,38 @@ tr.hero td{font-weight:700}
     <li>People don't learn "move the cup to the shelf". They learn pick up and put down; the task is just the two in a row.</li>
     <li>So I filmed only single skills, never two back to back. (Point at the clips.)</li>
     <li>→ reveal: then I ask for a long sentence it has never seen. If it does it, it composed something nobody showed it.</li>
-    <li>Next: what I expected to happen (hypotheses).</li>
+    <li>Next: what I bet would happen (hypotheses).</li>
   </ul></aside>
 </section>
 
+
+<section class="step" data-sec="Hypotheses" data-t="60">
+  <div class="kicker">What I bet on</div>
+  <h2>Three hypotheses</h2>
+  <div class="row" style="gap:34px;margin-top:40px;align-items:stretch">
+    <div class="card frag grow">
+      <div class="big">H1</div>
+      <h3 style="margin-top:18px">Clips are enough to teach each skill</h3>
+      <p class="small muted">How the object moves in my clips becomes the reward.</p>
+    </div>
+    <div class="card frag grow">
+      <div class="big">H2</div>
+      <h3 style="margin-top:18px">Skills chain into longer tasks</h3>
+      <p class="small muted">Train on 1–2 commands. Test on 3–8.</p>
+    </div>
+    <div class="card frag grow">
+      <div class="big">H3</div>
+      <h3 style="margin-top:18px">It can keep track of its own progress</h3>
+      <p class="small muted">It ticks off steps in the sentence: <b>(done)</b>.</p>
+    </div>
+  </div>
+  <aside class="notes"><ul>
+    <li>H1: I never label anything. The cube's path in my phone clip is turned into a score the robot tries to match. If that's enough, the robot learns all four skills from my clips alone.</li>
+    <li>H2: in training the robot only ever gets one or two commands. A long task is just more of the same hand-offs, so it should be able to do 6 in a row.</li>
+    <li>H3: from the camera, the scene after step 2 can look like the scene after step 4. So it needs memory. Instead of adding a planner, the model writes "(done)" next to each finished command in its own instruction.</li>
+    <li>Next: how I built it.</li>
+  </ul></aside>
+</section>
 
 <div id="blank"></div>
 <div id="foot"><div id="secs"></div><div id="count"></div></div>
