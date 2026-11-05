@@ -41,6 +41,13 @@ b,strong{font-weight:700}
 .vid{border:3px solid var(--ink);border-radius:10px;box-shadow:7px 7px 0 var(--ink);background:#111;overflow:hidden;position:relative}
 .vid video{display:block;width:100%;height:auto;cursor:pointer}
 .vid.fixed video{height:100%;object-fit:contain}
+/* video controls: show on hover, and stay visible while paused */
+.vctl{position:absolute;left:0;right:0;bottom:0;display:flex;align-items:center;gap:12px;padding:16px 14px 10px;background:linear-gradient(transparent,rgba(0,0,0,.78));opacity:0;transition:opacity .2s}
+.vid:hover .vctl,.vid.paused .vctl{opacity:1}
+.vctl button{all:unset;cursor:pointer;color:#fff;font:700 18px var(--font);width:26px;text-align:center}
+.vctl input{flex:1;min-width:0;accent-color:var(--accent);cursor:pointer;margin:0}
+.vctl .tm{color:#fff;font:500 15px var(--font);font-variant-numeric:tabular-nums;white-space:nowrap}
+.vid.fixed .vctl .tm{display:none}
 .cap{font-size:22px;color:var(--muted);margin-top:14px;line-height:1.3}
 .cap b{color:var(--ink)}
 .chip{display:inline-block;border:2px solid var(--ink);border-radius:999px;padding:4px 14px;font-size:20px;font-weight:700;background:var(--paper)}
@@ -103,383 +110,53 @@ tr.hero td{font-weight:700}
   <aside class="notes"><ul>
     <li>Let it play. Read nothing off the slide.</li>
     <li>"One sentence, six commands, never trained on more than two."</li>
-    <li>Agenda: data → reward → teacher → student → memory → results → what failed.</li>
+    <li>Next: the problem I set myself.</li>
   </ul></aside>
 </section>
 
-<section class="step" data-sec="Intro" data-t="45">
-  <div class="kicker">The brief</div>
-  <h2>Your own data, a robot in sim, a VLA or world model</h2>
-  <div class="card" style="font-size:34px;line-height:1.4;max-width:1250px">
-    “We're not looking for standard solutions, we're looking for <span class="hl">how you think</span>.”
-  </div>
-  <div class="row" style="margin-top:46px;gap:28px">
-    <div class="chip">Collected data plays a real role</div>
-    <div class="chip">Policy performance in sim</div>
-    <div class="chip">Simple, clear, no slop</div>
-    <div class="chip">What worked and what didn't</div>
-  </div>
-  <p class="frag" style="margin-top:56px;font-size:36px"><b>My choice:</b> test <span class="hl">composition</span>, not imitation.</p>
-  <aside class="notes"><ul>
-    <li>Four scoring criteria, read the chips.</li>
-    <li>Imitating a demo is the standard solution.</li>
-    <li>→ frag: "So I asked: can it do tasks I never demonstrated?"</li>
-  </ul></aside>
-</section>
-
-<section class="step" data-sec="Intro" data-t="60">
-  <div class="kicker">The question</div>
-  <h2 style="max-width:1300px">Can a robot that only knows single skills do long tasks it was never shown?</h2>
-  <div style="display:flex;flex-direction:column;gap:22px;margin-top:10px">
-    <div class="card frag"><p><b>H1 · Clips are enough to learn the skills.</b> <span class="muted">A reward built only from how objects move in my phone clips trains every skill and the handoff between two.</span></p></div>
-    <div class="card frag"><p><b>H2 · Skills plus handoffs compose.</b> <span class="muted">Trained on 1–2 commands, it runs longer sentences, because a long task is just more handoffs.</span></p></div>
-    <div class="card frag"><p><b>H3 · The missing piece is memory, and it can live in the sentence.</b> <span class="muted">The model writes its own progress into its input.</span></p></div>
-  </div>
-  <aside class="notes"><ul>
-    <li>Humans learn skills, not tasks: cup to shelf = pick + put.</li>
-    <li>H1 → reveal; H2 → reveal; H3 → reveal.</li>
-    <li>Results preview: H1 yes, H2 partly, H3 yes, and it's the bottleneck.</li>
-  </ul></aside>
-</section>
-
-<section class="step" data-sec="Data &amp; reward" data-t="75">
-  <div class="kicker">My data</div>
-  <h2>Phone clips of single skills. Never two in a row.</h2>
-  <div class="row">
-    <div style="display:grid;grid-template-columns:440px 440px;gap:26px 26px">
-      <div><div class="vid"><video src="videos/clip_push.mp4" poster="videos/clip_push.jpg" muted loop playsinline preload="auto"></video></div><div class="cap" style="margin-top:8px"><b>Push</b></div></div>
-      <div><div class="vid"><video src="videos/clip_lift.mp4" poster="videos/clip_lift.jpg" muted loop playsinline preload="auto"></video></div><div class="cap" style="margin-top:8px"><b>Pick up</b></div></div>
-      <div><div class="vid"><video src="videos/clip_drop.mp4" poster="videos/clip_drop.jpg" muted loop playsinline preload="auto"></video></div><div class="cap" style="margin-top:8px"><b>Put down</b></div></div>
-      <div><div class="vid"><video src="videos/clip_stack.mp4" poster="videos/clip_stack.jpg" muted loop playsinline preload="auto"></video></div><div class="cap" style="margin-top:8px"><b>Put on the other object</b></div></div>
+<section class="step" data-sec="Problem" data-t="75">
+  <div class="kicker">The problem</div>
+  <h2 style="max-width:1250px">Can a robot that only learns single skills do long tasks it was never shown?</h2>
+  <div class="row" style="align-items:stretch;gap:40px">
+    <div>
+      <h3>What I show it</h3>
+      <div style="display:grid;grid-template-columns:340px 340px;gap:16px 18px">
+        <div><div class="vid"><video src="videos/clip_lift.mp4" poster="videos/clip_lift.jpg" muted loop playsinline preload="auto"></video></div><div class="cap" style="margin-top:6px"><b>Pick up</b></div></div>
+        <div><div class="vid"><video src="videos/clip_drop.mp4" poster="videos/clip_drop.jpg" muted loop playsinline preload="auto"></video></div><div class="cap" style="margin-top:6px"><b>Put down</b></div></div>
+        <div><div class="vid"><video src="videos/clip_stack.mp4" poster="videos/clip_stack.jpg" muted loop playsinline preload="auto"></video></div><div class="cap" style="margin-top:6px"><b>Put on the other object</b></div></div>
+        <div><div class="vid"><video src="videos/clip_push.mp4" poster="videos/clip_push.jpg" muted loop playsinline preload="auto"></video></div><div class="cap" style="margin-top:6px"><b>Push</b></div></div>
+      </div>
+      <p class="small muted" style="margin-top:12px">My phone · one skill per clip · never two in a row</p>
     </div>
-    <div class="grow" style="padding-left:20px">
-      <div class="huge">43</div>
-      <p style="margin-top:6px">usable clips</p>
-      <p class="muted" style="margin-top:18px">12 push · 10 pick up · 21 put down</p>
-      <p style="margin-top:34px">A real cube and a crisps can, with <b>ArUco markers</b></p>
-      <p class="muted" style="margin-top:12px">→ each object's position and orientation on the table, every frame</p>
+    <div class="big" style="align-self:center;font-size:80px">→</div>
+    <div class="card frag grow" style="align-self:center">
+      <h3>What I ask it</h3>
+      <ol style="margin:6px 0 0;padding-left:34px;display:flex;flex-direction:column;gap:6px">
+        <li style="font-size:25px">pick up the cube</li>
+        <li style="font-size:25px">put the cube on the cylinder</li>
+        <li style="font-size:25px">pick up the cube</li>
+        <li style="font-size:25px">put the cube on the target</li>
+        <li style="font-size:25px">pick up the cylinder</li>
+        <li style="font-size:25px">put the cylinder on the cube</li>
+      </ol>
+      <p class="small" style="margin-top:16px"><span class="hl"><b>One sentence. Never seen as a whole.</b></span></p>
     </div>
   </div>
   <aside class="notes"><ul>
-    <li>Filmed myself, phone, one skill per clip.</li>
-    <li>Markers on cube, can, target + one calibration marker.</li>
-    <li>I track the OBJECT, not my hand. That choice matters later.</li>
+    <li>The brief: my own data, a robot in sim, a VLA. "Not standard solutions, how you think."</li>
+    <li>Standard answer = film the task, train the robot to copy it. That only tests copying.</li>
+    <li>People don't learn "move the cup to the shelf". They learn pick up and put down; the task is just the two in a row.</li>
+    <li>So I filmed only single skills, never two back to back. (Point at the clips.)</li>
+    <li>→ reveal: then I ask for a long sentence it has never seen. If it does it, it composed something nobody showed it.</li>
+    <li>Next: what I expected to happen (hypotheses).</li>
   </ul></aside>
 </section>
 
-<section class="step" data-sec="Data &amp; reward" data-t="60">
-  <div class="kicker">What I tried first</div>
-  <h2>Two dead ends before the method</h2>
-  <div class="row">
-    <div class="grow" style="display:flex;flex-direction:column;gap:24px">
-      <div class="card"><h3>1 · Fine-tune the VLA on single skills</h3><p class="muted">Then prompt the combined task.</p><p style="margin-top:10px">push <b>16</b> · pick up <b>0</b> · every combined task <b class="bad">0</b></p></div>
-      <div class="card"><h3>2 · A motion vocabulary from the clips</h3><p class="muted">VAE over clip motions; PPO picks skill + latent, each runs ~2 s open-loop.</p><p style="margin-top:10px">stacking: <b class="bad">1</b>/100 &nbsp;vs&nbsp; raw actions <b class="good">99</b>/100</p></div>
-      <p class="frag" style="font-size:31px"><b>Lesson:</b> human data goes in the <span class="hl">reward</span>; control stays <span class="hl">closed-loop</span>.</p>
-    </div>
-    <div style="width:700px"><div class="vid"><video src="videos/fail_hold_up.mp4" poster="videos/fail_hold_up.jpg" muted loop playsinline preload="auto"></video></div><div class="cap">Motion primitives: lifts the cube and holds it up forever.</div></div>
-  </div>
-  <aside class="notes"><ul>
-    <li>1: single-skill demos (scripted, robot-form) → never composes.</li>
-    <li>2: open-loop 2 s chunks can't hit ~1 cm stacking precision.</li>
-    <li>~75% of vocab successes were pushes.</li>
-    <li>→ frag lesson.</li>
-  </ul></aside>
-</section>
-
-<section class="step" data-sec="Data &amp; reward" data-t="90">
-  <div class="kicker">Clips → reward</div>
-  <h2>The reward is where the object goes, measured from my clips</h2>
-  <div class="vid"><video src="videos/clip_to_template.mp4" poster="videos/clip_to_template.jpg" muted loop playsinline preload="auto"></video></div>
-  <div class="row" style="margin-top:30px;gap:26px">
-    <div class="card grow"><p><b>8 corner keypoints</b> of the commanded object follow the skill's path inside a <span class="hl">3 cm tube</span></p><p class="small muted" style="margin-top:6px">3 cm = median deviation of my clips from their mean path</p></div>
-    <div class="card grow"><p><b>From the clips:</b> lift ≈ 20 cm, place height, push direction, yaw change</p></div>
-    <div class="card grow"><p><b>One formula, 3 templates.</b> Scores only the object, <span class="hl">not the robot's body</span></p></div>
-  </div>
-  <aside class="notes"><ul>
-    <li>Orange = tracked clip path, green = template.</li>
-    <li>Reward = progress along template inside tube.</li>
-    <li>Command picks the template: "put cube on cylinder" = put-down template, ends on top of the cylinder.</li>
-    <li>Hand-set: done test (&lt;2 cm, &lt;0.1 m/s, 0.3 s), time penalty, bonus.</li>
-    <li>Embodiment-agnostic → come back to this in scaling.</li>
-  </ul></aside>
-</section>
-
-<section class="step" data-sec="Data &amp; reward" data-t="75">
-  <div class="kicker">Reward hacking</div>
-  <h2>Every reward I wrote got hacked</h2>
-  <div class="row" style="gap:30px">
-    <div class="grow"><div class="vid"><video src="videos/fail_never_release.mp4" poster="videos/fail_never_release.jpg" muted loop playsinline preload="auto"></video></div><div class="cap"><b>Reward grasp + carry:</b> toggles the gripper on the release threshold. 0 successes.</div></div>
-    <div class="grow"><div class="vid"><video src="videos/fail_push_not_lift.mp4" poster="videos/fail_push_not_lift.jpg" muted loop playsinline preload="auto"></video></div><div class="cap"><b>Reward distance to goal:</b> pushes instead of lifting. 19/100.</div></div>
-  </div>
-  <div class="row frag" style="margin-top:28px;gap:30px">
-    <div class="card grow"><p><b>Clip reward, problem 1:</b> zero signal until first contact; <b class="bad">504</b> iterations of nothing.</p><p class="small muted" style="margin-top:6px">Fix: gripper → object leg + random start pose</p></div>
-    <div class="card grow"><p><b>Problem 2:</b> push solved by grasp-and-carry, <b class="bad">85</b>/100.</p><p class="small muted" style="margin-top:6px">Fix: lift penalty only during push → 0/100</p></div>
-  </div>
-  <aside class="notes"><ul>
-    <li>Hand-written per-task rewards: a loophole every time.</li>
-    <li>Found by watching rollouts, not the return curve.</li>
-    <li>→ frag: the clip reward had two problems too, both fixed.</li>
-    <li>Honest: the no-lift penalty is hand-added.</li>
-  </ul></aside>
-</section>
-
-<section class="step" data-sec="Teacher &amp; student" data-t="45">
-  <div class="kicker">The pipeline</div>
-  <h2>RL does the trial and error; the VLA copies it</h2>
-  <img src="img/pipeline.svg" alt="Film skills, infer the reward, train an RL teacher, distill into a VLA, compose tasks" style="width:100%;border-radius:10px">
-  <div class="row" style="margin-top:36px;gap:30px">
-    <div class="card grow"><h3>Teacher</h3><p>PPO, Franka, Isaac Lab<br><b>16,384</b> robots in parallel</p><p class="muted small" style="margin-top:8px">Sees exact object positions + current command · 1–2 commands per episode</p></div>
-    <div class="card grow"><h3>Student</h3><p>SmolVLA, <b>450M</b><br>front + wrist camera + one sentence</p><p class="muted small" style="margin-top:8px">No positions, no step counter</p></div>
-  </div>
-  <aside class="notes"><ul>
-    <li>RL on a 450M image model = far too slow. Privileged teacher is cheap.</li>
-    <li>Teacher = data engine: any number of labelled episodes, any layout.</li>
-    <li>Episodes ≤ 2 commands, so it sees every skill and every handoff.</li>
-  </ul></aside>
-</section>
-
-<section class="step" data-sec="Teacher &amp; student" data-t="90">
-  <div class="kicker">Distillation</div>
-  <h2>4,500 teacher episodes, 32K steps. Three things mattered.</h2>
-  <div class="row" style="gap:28px;align-items:stretch">
-    <div class="card grow"><h3>Smooth the teacher</h3><p class="muted">The RL teacher slams commands back and forth; the student learned the average.</p><p style="margin-top:18px">each step: new command / old motion</p><div class="big" style="margin-top:8px">5% / 95%</div></div>
-    <div class="card grow"><h3>Pair every scene</h3><p class="muted">Same images, "cube" vs "cylinder". Only the sentence says which.</p><div class="vid" style="margin:14px 0 14px;box-shadow:4px 4px 0 var(--ink)"><video src="videos/wd_wrong_object.mp4" poster="videos/wd_wrong_object.jpg" muted loop playsinline preload="auto"></video></div><p>picks the right object</p><div class="big" style="margin-top:8px">45 → 80</div></div>
-    <div class="card grow"><h3>More pushes</h3><p class="muted">The weakest skill. 3,000 paired + 1,500 push episodes.</p><p style="margin-top:18px">push success</p><div class="big" style="margin-top:8px">23 → 44</div></div>
-  </div>
-  <aside class="notes"><ul>
-    <li>Smoothing: teacher trained with the filter on, so it learns to work with it.</li>
-    <li>Hindsight: label with how the arm actually moved; no retrain needed.</li>
-    <li>Pairing video: no pairing = asked red, carries blue (chance).</li>
-    <li>45→80 and 23→44 were measured on earlier versions.</li>
-  </ul></aside>
-</section>
-
-<section class="step" data-sec="Memory" data-t="50">
-  <div class="kicker">The memory problem</div>
-  <h2>From the camera, step 1 and step 3 look the same</h2>
-  <div class="row" style="gap:30px">
-    <div class="grow"><div class="vid"><video src="videos/wd_no_memory.mp4" poster="videos/wd_no_memory.jpg" muted loop playsinline preload="auto"></video></div><div class="cap"><b>Whole sentence, no memory:</b> keeps redoing the start. 0 of 6 in order.</div></div>
-    <div class="grow"><div class="vid"><video src="videos/nomarks_stuck.mp4" poster="videos/nomarks_stuck.jpg" muted loop playsinline preload="auto"></video></div><div class="cap"><b>Marks switched off:</b> stuck on command one.</div></div>
-  </div>
-  <aside class="notes"><ul>
-    <li>Restack: reach for the cube in step 1 and step 3. Same scene.</li>
-    <li>After step 4 the board = a finished 4-step task.</li>
-    <li>The policy has to know where it is in the sentence.</li>
-  </ul></aside>
-</section>
-
-<section class="step" data-sec="Memory" data-t="75">
-  <div class="kicker">Memory in the sentence</div>
-  <h2>The model writes “(done)” into its own input</h2>
-  <div class="card sent">
-    <span class="d">pick up the cube</span><span class="tag">(done)</span>, then <span class="d">put the cube on the cylinder</span><span class="tag">(done)</span>, then <span class="now">pick up the cube</span> <span class="arrow">← now</span>, then put the cube on the target
-  </div>
-  <p style="margin-top:20px">One extra output, <b>"is this step done?"</b>. Above <b>0.85</b> for <b>0.5 s</b> → write "(done)". First unmarked command = do it.</p>
-  <div class="frag" style="margin-top:38px">
-    <p><b>Training trick:</b> hide the 1–2 real commands in a sentence of up to 10.</p>
-    <div class="card sent" style="margin-top:14px;font-size:27px">
-      push the cube to the target<span class="tag">(done)</span>, then pick up the cylinder<span class="tag">(done)</span>, then put the cylinder on the cube<span class="tag">(done)</span>, then <span class="now">pick up the cube</span>, then <span class="now" style="background:#f3dd8c">put the cube on the target</span>, then pick up the cylinder
-    </div>
-    <p class="muted" style="margin-top:14px">Current command lands at every position 1–10 equally often. At most 3 in front → 6 steps: <b class="bad">5</b>/100.</p>
-  </div>
-  <aside class="notes"><ul>
-    <li>Label: done = 1 for the half-second before the teacher moved on.</li>
-    <li>No planner, no external counter. Memory = its own input.</li>
-    <li>→ frag: padding. Random done-marked prefix + random suffix.</li>
-  </ul></aside>
-</section>
-
-<section class="step" data-sec="Memory" data-t="60">
-  <div class="kicker">Five ways to remember</div>
-  <h2>Only memory written into the sentence holds up</h2>
-  <table style="max-width:1300px">
-    <tr><th>What the model gets so it knows where it is</th><th style="text-align:right">4 steps</th><th style="text-align:right">6 steps</th></tr>
-    <tr><td>Nothing extra, just the whole sentence</td><td class="n">1</td><td class="n">0</td></tr>
-    <tr><td>Older camera frames + its own past actions</td><td class="n">≈0</td><td class="n">≈0</td></tr>
-    <tr><td>One command at a time, a script moves on when it says done</td><td class="n">65</td><td class="n">38</td></tr>
-    <tr><td>A counter in its input: “k steps done”</td><td class="n">42</td><td class="n bad">0</td></tr>
-    <tr class="hero frag" style="background:var(--accent)"><td>Its own “(done)” marks, written into the sentence</td><td class="n">81</td><td class="n">40</td></tr>
-  </table>
-  <p class="cap" style="margin-top:22px">All commands done in order, out of 100 held-out layouts. Earlier rows are earlier versions of the same pipeline.</p>
-  <aside class="notes"><ul>
-    <li>Old frames: a frame from 1 s ago doesn't say which step either.</li>
-    <li>Counter never saw "5 done" → 6-step fails.</li>
-    <li>Script = memory outside the model; marks beat it.</li>
-    <li>→ frag the winner.</li>
-  </ul></aside>
-</section>
-
-<section class="step" data-sec="Results" data-t="90">
-  <div class="kicker">Results · 100 held-out layouts per task · all commands in order</div>
-  <h2 style="margin-bottom:18px">Long tasks are composed entirely at inference</h2>
-  <table>
-    <tr><th>Task</th><th style="text-align:center">Steps</th><th>Student (2 cameras + sentence)</th><th style="text-align:right"></th><th style="text-align:right">Teacher</th></tr>
-    <tr><td>Pick up the cube</td><td style="text-align:center">1</td><td><div class="bar"><i style="width:94%"></i></div></td><td class="n">94</td><td class="n muted">100</td></tr>
-    <tr><td>Pick up the cylinder</td><td style="text-align:center">1</td><td><div class="bar"><i style="width:59%"></i></div></td><td class="n">59</td><td class="n muted">100</td></tr>
-    <tr><td>Push the cube to the target</td><td style="text-align:center">1</td><td><div class="bar"><i style="width:59%"></i></div></td><td class="n">59</td><td class="n muted">100</td></tr>
-    <tr><td>Cube to the target</td><td style="text-align:center">2</td><td><div class="bar"><i style="width:97%"></i></div></td><td class="n">97</td><td class="n muted">100</td></tr>
-    <tr><td>Cube on the cylinder</td><td style="text-align:center">2</td><td><div class="bar"><i style="width:96%"></i></div></td><td class="n">96</td><td class="n muted">100</td></tr>
-    <tr><td>Cylinder on the cube</td><td style="text-align:center">2</td><td><div class="bar"><i style="width:81%"></i></div></td><td class="n">81</td><td class="n muted">100</td></tr>
-    <tr class="ood"><td>Push, then stack</td><td style="text-align:center">3</td><td><div class="bar"><i style="width:62%"></i></div></td><td class="n">62</td><td class="n muted">94</td></tr>
-    <tr class="ood hero"><td>Stack, then unstack</td><td style="text-align:center">4</td><td><div class="bar"><i style="width:81%"></i></div></td><td class="n">81</td><td class="n muted">100</td></tr>
-    <tr class="ood hero"><td>Restack</td><td style="text-align:center">6</td><td><div class="bar"><i style="width:40%"></i></div></td><td class="n">40</td><td class="n muted">94</td></tr>
-    <tr class="ood"><td>Stack and unstack, twice</td><td style="text-align:center">8</td><td><div class="bar"><i style="width:0%"></i></div></td><td class="n bad">0</td><td class="n muted">100</td></tr>
-  </table>
-  <aside class="notes"><ul>
-    <li>Every training episode: ≤ 2 commands. 3+ = out of distribution in length.</li>
-    <li>H1: teacher 94–100 everywhere → clips are enough.</li>
-    <li>H2: 62 / 81 / 40, then 0 at 8 → composes, up to a point.</li>
-    <li>Weak: cylinder + push = 59.</li>
-    <li>Not shown: cyl to target 77.</li>
-  </ul></aside>
-</section>
-
-<section class="step" data-sec="Results" data-t="45">
-  <div class="kicker">Does it really use the marks?</div>
-  <h2>It recovers, and it reads its own marks</h2>
-  <div class="row" style="gap:30px">
-    <div class="grow"><div class="vid"><video src="videos/knock_refetch.mp4" poster="videos/knock_refetch.jpg" muted loop playsinline preload="auto"></video></div><div class="cap"><b>Knocked away after it was done:</b> goes back for it.</div></div>
-    <div class="grow"><div class="vid"><video src="videos/drop_repick.mp4" poster="videos/drop_repick.jpg" muted loop playsinline preload="auto"></video></div><div class="cap"><b>Dropped mid-carry:</b> picks it up again.</div></div>
-  </div>
-  <div class="row" style="margin-top:30px;gap:30px">
-    <div class="card grow"><p>Marking switched off → 4-step task <b class="bad">0</b>/50</p></div>
-    <div class="card grow"><p>First two marks pre-written → skips to step 3, <b class="good">42</b>/50</p></div>
-  </div>
-  <aside class="notes"><ul>
-    <li>Ablation on an earlier model, same recipe. Say so.</li>
-    <li>Pre-written marks = it trusts the text over the scene.</li>
-    <li>That trust is also the weakness → next slide.</li>
-  </ul></aside>
-</section>
-
-<section class="step" data-sec="Results" data-t="60">
-  <div class="kicker">Where the 6-step runs fail</div>
-  <h2>Early marks, and the cylinder</h2>
-  <div class="row" style="gap:30px">
-    <div class="grow"><div class="vid"><video src="videos/restack_fail.mp4" poster="videos/restack_fail.jpg" muted loop playsinline preload="auto"></video></div><div class="cap"><b>Knocks the cylinder over</b> at command five.</div></div>
-    <div class="grow"><div class="vid"><video src="videos/restack_fail_early.mp4" poster="videos/restack_fail_early.jpg" muted loop playsinline preload="auto"></video></div><div class="cap"><b>Marked done too early</b>, so a step is skipped.</div></div>
-  </div>
-  <div class="row" style="margin-top:30px;gap:40px;align-items:center">
-    <p style="width:330px"><b>Where failures stop</b><br><span class="muted small">of 100 runs</span></p>
-    <div class="grow" style="display:grid;grid-template-columns:420px 1fr;gap:10px 18px;align-items:center;font-size:24px">
-      <span>step 5 · pick up the cylinder</span><div style="display:flex;gap:12px;align-items:center"><div style="height:22px;width:250px;background:var(--ink);border-radius:4px"></div><b>25</b></div>
-      <span>step 4 · put cube on target</span><div style="display:flex;gap:12px;align-items:center"><div style="height:22px;width:150px;background:var(--ink);border-radius:4px"></div><b>15</b></div>
-      <span>step 2 · put cube on cylinder</span><div style="display:flex;gap:12px;align-items:center"><div style="height:22px;width:130px;background:var(--ink);border-radius:4px"></div><b>13</b></div>
-    </div>
-  </div>
-  <aside class="notes"><ul>
-    <li>21 runs knock something over.</li>
-    <li>Cylinder: pick up 59, to target 77, onto cube 81, vs 94–97 for the cube.</li>
-    <li>Grasped too high → tips; on its side it can't be picked (never in data).</li>
-  </ul></aside>
-</section>
-
-<section class="step" data-sec="Results" data-t="45">
-  <div class="kicker">Why 8 steps is 0</div>
-  <h2>“Done” reads the image, not the sentence</h2>
-  <div class="row" style="gap:40px">
-    <div style="width:860px"><div class="vid"><video src="videos/restack8_marks_race.mp4" poster="videos/restack8_marks_race.jpg" muted loop playsinline preload="auto"></video></div><div class="cap">8-step task: after four real steps the marks run ahead and it stops.</div></div>
-    <div class="grow">
-      <div class="huge">60<span style="font-size:50px">/100</span></div>
-      <p style="margin-top:12px">stop at exactly 4 steps in order, with marks at <b>8 of 8</b></p>
-      <p class="muted" style="margin-top:30px">After step 4 the scene looks like a finished 4-step task.</p>
-      <p style="margin-top:30px">The skills are fine. <span class="hl">The done signal is the bottleneck.</span></p>
-    </div>
-  </div>
-  <aside class="notes"><ul>
-    <li>Teacher on the same 8-step task: 100/100.</li>
-    <li>Done fires when an object is lifted and held still, whatever the command.</li>
-    <li>Sets up the scaling part: fix the judge first.</li>
-  </ul></aside>
-</section>
-
-<section class="step" data-sec="Results" data-t="45">
-  <div class="kicker">Honest evaluation</div>
-  <h2>Same model, same runs: the judge sets the number</h2>
-  <div class="row" style="gap:26px;align-items:stretch">
-    <div class="card grow"><div class="big">12</div><p style="margin-top:12px">strict check</p><p class="muted small">1.5 cm, held 0.5 s</p></div>
-    <div class="card grow"><div class="big">24</div><p style="margin-top:12px">the teacher's own check</p><p class="muted small">≈2 cm, held 0.3 s</p></div>
-    <div class="card grow" style="background:var(--accent)"><div class="big">40</div><p style="margin-top:12px">headline, in order</p><p class="small">5 cm, held 0.2 s</p></div>
-    <div class="card grow"><div class="big">49</div><p style="margin-top:12px">lenient</p><p class="muted small">final scene only</p></div>
-  </div>
-  <p style="margin-top:40px">When the student wrote “(done)” on a stack, the cube sat <b>0.7 cm</b> high if the strict check agreed and <b>1.7 cm</b> if it didn't. That's inside the teacher's own 2 cm.</p>
-  <p class="muted" style="margin-top:16px">One put-down a few mm high fails every later command. I loosened the judge, not the robot.</p>
-  <aside class="notes"><ul>
-    <li>Say this BEFORE they ask.</li>
-    <li>Strict check was stricter than what the teacher learned to call done.</li>
-    <li>Teacher is scored with the same loose judge.</li>
-  </ul></aside>
-</section>
-
-<section class="step" data-sec="What didn't work" data-t="75">
-  <div class="kicker">What didn't work · a few of many</div>
-  <h2 style="margin-bottom:22px">Failures I learned the most from</h2>
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:22px 28px">
-    <div><div class="vid fixed" style="height:212px"><video src="videos/wd_base.mp4" poster="videos/wd_base.jpg" muted loop playsinline preload="auto"></video></div><div class="cap" style="margin-top:8px"><b>Base SmolVLA:</b> wanders. 0 everywhere.</div></div>
-    <div><div class="vid fixed" style="height:212px"><video src="videos/fail_top_edge.mp4" poster="videos/fail_top_edge.jpg" muted loop playsinline preload="auto"></video></div><div class="cap" style="margin-top:8px"><b>2 cm “arrived” radius:</b> grabs the top edge. Pick up 0%.</div></div>
-    <div><div class="vid fixed" style="height:212px"><video src="videos/wd_one_command.mp4" poster="videos/wd_one_command.jpg" muted loop playsinline preload="auto"></video></div><div class="cap" style="margin-top:8px"><b>External script:</b> flag fires early, script runs ahead.</div></div>
-    <div><div class="vid fixed" style="height:212px"><video src="videos/wd_number.mp4" poster="videos/wd_number.jpg" muted loop playsinline preload="auto"></video></div><div class="cap" style="margin-top:8px"><b>Step counter:</b> reaches 5 of 6, never 6.</div></div>
-    <div><div class="vid fixed" style="height:212px"><video src="videos/wd_cliptol_burst.mp4" poster="videos/wd_cliptol_burst.jpg" muted loop playsinline preload="auto"></video></div><div class="cap" style="margin-top:8px"><b>Stricter put-down from clips:</b> marks race to 8 of 8.</div></div>
-    <div><div class="vid fixed" style="height:212px"><video src="videos/wd_handleg_push.mp4" poster="videos/wd_handleg_push.jpg" muted loop playsinline preload="auto"></video></div><div class="cap" style="margin-top:8px"><b>No no-lift penalty:</b> pushes over objects, still marks done.</div></div>
-  </div>
-  <p class="muted small" style="margin-top:22px">Also: clean scripted demos 6% (never saw a mistake) · padding to 20 commands, short tasks 75 → 42 · random pauses, 4 steps 51 → 11 · voting, re-arming, self-check: no gain</p>
-  <aside class="notes"><ul>
-    <li>Pick three: clean demos (no recovery), counter (never saw 5), 2 cm radius.</li>
-    <li>Pattern: most failures came from the data or the judge, not the model.</li>
-  </ul></aside>
-</section>
-
-<section class="step" data-sec="What didn't work" data-t="40">
-  <div class="kicker">What I took away</div>
-  <h2>Three lessons</h2>
-  <div style="display:flex;flex-direction:column;gap:26px;max-width:1300px">
-    <div class="card"><p><b>Watch rollouts, not return curves.</b> <span class="muted">Every reward hack looked fine on the plot.</span></p></div>
-    <div class="card"><p><b>The judge matters as much as the policy.</b> <span class="muted">12 vs 40 on the same model.</span></p></div>
-    <div class="card"><p><b>For composition, memory is the bottleneck, not skills.</b> <span class="muted">Teacher 100 on 8 steps, student 0.</span></p></div>
-  </div>
-  <aside class="notes"><ul>
-    <li>Short. Breathe. Then: "So how would I take this further?"</li>
-  </ul></aside>
-</section>
-
-<!-- ============================ PART 2 (headings only, points are spoken) ============================ -->
-
-<section class="step p2 center" data-sec="Scaling" data-t="60">
-  <div class="kicker">Part 2 · 1 / 4</div>
-  <h1>Where it actually breaks</h1>
-  <aside class="notes"><ul><li>From memory. See SCALING.md.</li></ul></aside>
-</section>
-
-<section class="step p2 center" data-sec="Scaling" data-t="90">
-  <div class="kicker">Part 2 · 2 / 4</div>
-  <h1>The next two weeks</h1>
-  <aside class="notes"><ul><li>From memory. See SCALING.md.</li></ul></aside>
-</section>
-
-<section class="step p2 center" data-sec="Scaling" data-t="150">
-  <div class="kicker">Part 2 · 3 / 4</div>
-  <h1>Scaling to humanoids</h1>
-  <img src="img/pipeline.svg" alt="The five-step pipeline" style="width:1100px;margin-top:60px;border-radius:10px">
-  <aside class="notes"><ul><li>From memory. See SCALING.md.</li></ul></aside>
-</section>
-
-<section class="step p2 center" data-sec="Scaling" data-t="90">
-  <div class="kicker">Part 2 · 4 / 4</div>
-  <h1>How I'd spend the time</h1>
-  <aside class="notes"><ul><li>From memory. See SCALING.md.</li></ul></aside>
-</section>
-
-<section class="step p2 center" data-sec="Scaling" data-t="30">
-  <h1>Thank you · Questions</h1>
-  <p class="muted" style="margin-top:50px;font-size:26px">github.com/TheUndercover01/VLA-Humanoid</p>
-  <p class="muted" style="margin-top:10px;font-size:26px">theundercover01.github.io/ayushdeshmukh/projects/never-shown</p>
-  <aside class="notes"><ul><li>Optional: live play page, only if the GPU tunnels are up.</li></ul></aside>
-</section>
 
 <div id="blank"></div>
 <div id="foot"><div id="secs"></div><div id="count"></div></div>
 </div>
-<div id="hint">→ / Space next · ← back · N notes · F full screen · B blank · T reset timer</div>
+<div id="hint">→ / Space next · ← back · N notes · F full screen · K pause · J / L ∓1 s · , / . frame · R restart</div>
 
 <script>
 (function(){
@@ -500,15 +177,61 @@ tr.hero td{font-weight:700}
 
   const frags = k => [...steps[k].querySelectorAll('.frag')];
 
-  function render(){
-    steps.forEach((s, k) => {
-      const on = k === cur;
-      s.classList.toggle('active', on);
-      s.querySelectorAll('video').forEach(v => {
-        if (on) { if (v.paused) { v.currentTime = 0; v.play().catch(() => {}); } }
-        else v.pause();
-      });
+  // ---- videos: scrub bar per video, only the current step plays ----
+  const vids = [...document.querySelectorAll('.vid video')];
+  const curVids = () => [...steps[cur].querySelectorAll('video')];
+  const mmss = s => Math.floor(s / 60) + ':' + (s % 60).toFixed(1).padStart(4, '0');
+  const toggle = v => v.paused ? v.play().catch(() => {}) : v.pause();
+  function syncUI(v){
+    v.parentElement.classList.toggle('paused', v.paused);
+    v._ui.btn.textContent = v.paused ? '▶' : '❚❚';
+  }
+  vids.forEach(v => {
+    const bar = document.createElement('div');
+    bar.className = 'vctl';
+    bar.innerHTML = '<button title="Play / pause (K)">❚❚</button><input type="range" min="0" max="1000" value="0" tabindex="-1"><span class="tm"></span>';
+    v.parentElement.appendChild(bar);
+    const [btn, rng, tm] = bar.children;
+    v._ui = { btn, rng, tm };
+    btn.addEventListener('click', e => { e.stopPropagation(); toggle(v); });
+    let was = false;
+    rng.addEventListener('pointerdown', () => { v._drag = true; was = !v.paused; v.pause(); });
+    rng.addEventListener('input', () => { if (v.duration) v.currentTime = rng.value / 1000 * v.duration; });
+    rng.addEventListener('pointerup', () => { v._drag = false; if (was) v.play().catch(() => {}); rng.blur(); });
+    v.addEventListener('play', () => syncUI(v));
+    v.addEventListener('pause', () => syncUI(v));
+  });
+  (function loop(){
+    curVids().forEach(v => {
+      if (!v.duration || !v._ui) return;
+      if (!v._drag) v._ui.rng.value = v.currentTime / v.duration * 1000;
+      v._ui.tm.textContent = mmss(v.currentTime) + ' / ' + mmss(v.duration);
     });
+    requestAnimationFrame(loop);
+  })();
+  function playStep(){
+    steps.forEach((s, k) => s.querySelectorAll('video').forEach(v => {
+      if (k === cur) { v.currentTime = 0; v.play().catch(() => {}); } else v.pause();
+    }));
+  }
+  function seekAll(dt, pause){
+    curVids().forEach(v => {
+      if (!v.duration) return;
+      if (pause) v.pause();
+      v.currentTime = Math.max(0, Math.min(v.duration - 0.01, v.currentTime + dt));
+    });
+  }
+  // Load each clip into memory so seeking works on any server (python's http.server has no range requests).
+  if (location.protocol.startsWith('http')) vids.forEach(v => {
+    fetch(v.getAttribute('src')).then(r => r.ok ? r.blob() : Promise.reject()).then(b => {
+      const t = v.currentTime, p = !v.paused;
+      v.addEventListener('loadedmetadata', () => { v.currentTime = t; if (p) v.play().catch(() => {}); }, { once: true });
+      v.src = URL.createObjectURL(b);
+    }).catch(() => {});
+  });
+
+  function render(){
+    steps.forEach((s, k) => s.classList.toggle('active', k === cur));
     frags(cur).forEach((f, k) => f.classList.toggle('on', k < frag));
     const sec = steps[cur].dataset.sec;
     [...secsEl.children].forEach(c => c.classList.toggle('on', c.textContent === sec));
@@ -519,9 +242,9 @@ tr.hero td{font-weight:700}
 
   function go(k, showAll){
     k = Math.max(0, Math.min(steps.length - 1, k));
-    if (k !== cur) steps[cur].querySelectorAll('video').forEach(v => v.pause());
     cur = k; frag = showAll ? frags(k).length : 0;
     render();
+    playStep();
   }
   function next(){
     if (t0 === null) t0 = Date.now();
@@ -574,7 +297,15 @@ tr.hero td{font-weight:700}
   setInterval(tick, 1000);
 
   function onKey(e){
+    if (e.target && e.target.tagName === 'INPUT') return;
     const k = e.key;
+    const kl = k.toLowerCase();
+    if (kl === 'k') { const vs = curVids(), any = vs.some(v => !v.paused); vs.forEach(v => any ? v.pause() : v.play().catch(() => {})); return; }
+    if (kl === 'j') return seekAll(-1);
+    if (kl === 'l') return seekAll(1);
+    if (k === ',') return seekAll(-1 / 25, true);
+    if (k === '.') return seekAll(1 / 25, true);
+    if (kl === 'r') { curVids().forEach(v => { v.currentTime = 0; v.play().catch(() => {}); }); return; }
     if (['ArrowRight', 'PageDown', ' ', 'Enter'].includes(k)) { e.preventDefault(); next(); }
     else if (['ArrowLeft', 'PageUp', 'Backspace'].includes(k)) { e.preventDefault(); prev(); }
     else if (k === 'Home') go(0);
