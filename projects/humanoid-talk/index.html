@@ -323,6 +323,45 @@ tr.hero td{font-weight:700}
   </ul></aside>
 </section>
 
+<section class="step" data-sec="Teacher" data-t="75">
+  <div class="kicker">Step 3 · The teacher · H2</div>
+  <h2>An RL teacher that sees everything</h2>
+  <div class="row" style="gap:30px;margin-top:6px;align-items:stretch">
+    <div class="card frag grow">
+      <h3>What it sees</h3>
+      <ul style="margin:6px 0 0;padding-left:26px;display:flex;flex-direction:column;gap:8px">
+        <li class="small">Exact object positions</li>
+        <li class="small">The next checkpoint</li>
+        <li class="small">Which command it's on</li>
+      </ul>
+    </div>
+    <div class="card frag grow">
+      <h3>How it practises</h3>
+      <ul style="margin:6px 0 0;padding-left:26px;display:flex;flex-direction:column;gap:8px">
+        <li class="small">16,384 robots at once</li>
+        <li class="small"><b>One or two commands</b> per episode</li>
+        <li class="small">A new random table every time</li>
+      </ul>
+    </div>
+  </div>
+  <div class="card frag" style="margin-top:34px;padding:24px 30px">
+    <h3>Then I ask it for more</h3>
+    <table style="width:100%;margin-top:6px">
+      <tr><th>Steps</th><th style="text-align:right">2</th><th style="text-align:right">3</th><th style="text-align:right">4</th><th style="text-align:right">6</th><th style="text-align:right">8</th></tr>
+      <tr><td>Success / 100</td><td style="text-align:right"><b>100</b></td><td style="text-align:right"><b>94</b></td><td style="text-align:right"><b>100</b></td><td style="text-align:right"><b>94</b></td><td style="text-align:right"><b>100</b></td></tr>
+    </table>
+    <p class="small muted" style="margin-top:12px">Never practised more than two.</p>
+  </div>
+  <aside class="notes"><ul>
+    <li>A Franka arm in Isaac Lab, trained with PPO for 1,000 rounds. 16,384 simulated robots in parallel, so trial and error is cheap.</li>
+    <li>It cheats on purpose: it sees exact positions, the next checkpoint on its path, and which command it's on. That's fine. It's only the teacher; the student never sees any of this.</li>
+    <li>Each episode is one or two commands, in sensible order: it starts with an empty hand, so first a pick-up or a push; after "pick up X" comes "put X down"; after a push comes a pick-up. So it learns every skill and every hand-off between two.</li>
+    <li>What didn't work: single commands only. It couldn't even finish a push from its start pose (4 vs 79 in an earlier version). It needs to see the hand-offs. And training on each full task (my first plan) means it has seen the task.</li>
+    <li>Result: up to 8 steps, 94-100. H2 holds for the teacher: skills plus hand-offs chain. But it's told which step it's on. The student won't be. That's the memory problem.</li>
+    <li>Next: step 4, copying it into the VLA.</li>
+  </ul></aside>
+</section>
+
 <div id="blank"></div>
 <div id="foot"><div id="secs"></div><div id="count"></div></div>
 </div>
