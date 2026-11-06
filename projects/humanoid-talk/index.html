@@ -422,30 +422,52 @@ tr.hero td{font-weight:700}
   </ul></aside>
 </section>
 
-<section class="step" data-sec="Student" data-t="120">
-  <div class="kicker">Step 4 · Distillation</div>
-  <h2>Four problems copying the teacher</h2>
-  <p class="small muted" style="margin-top:-18px;margin-bottom:14px">Success out of 100 new table layouts · earlier versions of the pipeline</p>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:26px 30px;margin-top:4px">
-    <div class="card frag" style="padding:18px 22px;display:flex;gap:18px;align-items:center">
-      <div><div class="kicker" style="color:var(--ink)">Problem 1</div><h3 style="margin-top:6px;font-size:27px">Clean demos</h3><p class="small muted" style="font-size:20px">It never saw a mistake, so it couldn’t recover.</p><p class="small" style="font-size:20px;margin-top:6px"><b>Fix:</b> add noise while recording; the teacher corrects it</p><p class="small" style="font-size:20px;margin-top:4px">Pick up the cube and put it on the target (2 steps): 6 → <b>52</b></p></div>
+<section class="step" data-sec="Student" data-t="80">
+  <div class="kicker">Step 4 · Distillation · 1 / 2</div>
+  <h2>Problems copying the teacher</h2>
+  <p class="small muted" style="margin-top:-18px;margin-bottom:12px">Success out of 100 new table layouts · earlier versions</p>
+  <div class="row" style="gap:44px;align-items:stretch">
+    <div class="frag grow" style="display:flex;flex-direction:column;gap:12px;min-width:0">
+      <div><div class="kicker" style="color:var(--ink)">Problem 1</div><h3 style="margin:4px 0 0">Clean demos</h3><p class="small muted">It never saw a mistake, so it can’t recover from one.</p></div>
+      <div class="vid" style="width:100%"><video src="videos/clean_vs_noise.mp4" poster="videos/clean_vs_noise.jpg" muted loop playsinline preload="auto"></video></div>
+      <p class="small"><b>Fix:</b> push the teacher off course with noise while recording; it corrects itself</p>
+      <p class="small">Pick up the cube, put it on the target (2 steps): 6 → <b>52</b></p>
     </div>
-    <div class="card frag" style="padding:18px 22px;display:flex;gap:18px;align-items:center">
-      <div><div class="kicker" style="color:var(--ink)">Problem 2</div><h3 style="margin-top:6px;font-size:27px">A jerky teacher</h3><p class="small muted" style="font-size:20px">Full left, full right, every step. The student learned the average.</p><p class="small" style="font-size:20px;margin-top:6px"><b>Fix:</b> the arm keeps 95% of its motion, takes 5% of the new one</p><p class="small" style="font-size:20px;margin-top:4px">Pick up the cube (1 step): about 0 → <b>63</b></p></div>
-    </div>
-    <div class="card frag" style="padding:18px 22px;display:flex;gap:18px;align-items:center">
-      <div class="vid" style="width:300px;flex:none"><video src="videos/wd_wrong_object.mp4" poster="videos/wd_wrong_object.jpg" muted loop playsinline preload="auto"></video></div><div><div class="kicker" style="color:var(--ink)">Problem 3</div><h3 style="margin-top:6px;font-size:27px">It ignores the sentence</h3><p class="small muted" style="font-size:20px">Asked for one object, carries the other.</p><p class="small" style="font-size:20px;margin-top:6px"><b>Fix:</b> same scene, recorded twice, once per object</p><p class="small" style="font-size:20px;margin-top:4px">Pick and place the named cube (2 steps): about 45 → <b>80</b></p></div>
-    </div>
-    <div class="card frag" style="padding:18px 22px;display:flex;gap:18px;align-items:center">
-      <div><div class="kicker" style="color:var(--ink)">Problem 4</div><h3 style="margin-top:6px;font-size:27px">Push is the weakest skill</h3><p class="small muted" style="font-size:20px">Too little push data.</p><p class="small" style="font-size:20px;margin-top:6px"><b>Fix:</b> 1,500 extra push episodes</p><p class="small" style="font-size:20px;margin-top:4px">Push the cube to the target (1 step): 23 → <b>44</b></p></div>
+    <div class="frag grow" style="display:flex;flex-direction:column;gap:12px;min-width:0">
+      <div><div class="kicker" style="color:var(--ink)">Problem 2</div><h3 style="margin:4px 0 0">A jerky teacher</h3><p class="small muted">Full left, full right. The student learns the average: nothing.</p></div>
+      <img src="videos/jerky_vs_smooth.png" alt="" style="width:80%;display:block;border:3px solid var(--ink);border-radius:10px"><div class="vid" style="width:80%"><video src="videos/jerky_student.mp4" poster="videos/jerky_student.jpg" muted loop playsinline preload="auto"></video></div>
+      <p class="small"><b>Fix:</b> the arm keeps 95% of its motion, takes 5% of the new one</p>
+      <p class="small">Pick up the cube (1 step): about 0 → <b>63</b></p>
     </div>
   </div>
   <aside class="notes"><ul>
-    <li>1. Trained on perfect demos it fit the data but scored 6/100 on pick-and-place: one small error and it's somewhere it has never been. While recording I push the teacher off course with noise; the label stays the teacher's correct action, so the student sees how to recover. 52/100.</li>
-    <li>2. The RL teacher is bang-bang: about 30% of steps flip sign. It still works, but a student copying it learns the average command, which goes nowhere: 0 on everything but push. An action-change penalty and smoothing the labels afterwards barely helped. So the smoothing went into the arm and the teacher was retrained with it. Lesson: a good teacher isn't the same as a teachable teacher.</li>
-    <li>3. The images give away which object to move most of the time, so it never learned to read. Record each scene twice, "the cube" and "the cylinder": same pixels, so only the words can tell them apart. 45 to 80.</li>
-    <li>4. Push was weakest. 1,500 extra push episodes: 23 to 44. That's why the data is 3,000 paired + 1,500 push.</li>
-    <li>All four are earlier versions, success out of 100 new table layouts. 1: the scripted-robot student, and 52 also uses re-planning every step. 2: the jerky student scored ~0 on everything but push (14); the smoothed one 63 on pick-up. 3: pairing came together with more data and longer training, not separated. 4: the 44 student also had the (done) marks.</li>
+    <li>Left, same table both times. Clean demos: it fit its data fine, but the first small error puts it somewhere it has never been, and it misses the grasp. With noise: while recording, I push the teacher off course and it corrects itself; the label is always the teacher's correct action. Now the data contains recoveries. 6 to 52 out of 100 on pick-and-place (52 also re-plans every step).</li>
+    <li>Right, top: real labels from the training data. The RL teacher slams full left, full right. A student trained on that predicts the average, which is roughly zero motion. Bottom: that student, it wanders and grabs the wrong cube. Fix: the smoothing goes into the arm and the teacher is retrained with it. A good teacher isn't the same as a teachable teacher. Pick-up 0 to 63.</li>
+  </ul></aside>
+</section>
+
+<section class="step" data-sec="Student" data-t="70">
+  <div class="kicker">Step 4 · Distillation · 2 / 2</div>
+  <h2>Problems copying the teacher</h2>
+  <p class="small muted" style="margin-top:-18px;margin-bottom:12px">Success out of 100 new table layouts · earlier versions</p>
+  <div class="row" style="gap:44px;align-items:stretch">
+    <div class="frag grow" style="display:flex;flex-direction:column;gap:12px;min-width:0">
+      <div><div class="kicker" style="color:var(--ink)">Problem 3</div><h3 style="margin:4px 0 0">It ignores the sentence</h3><p class="small muted">The image usually gives the answer away, so it never learns to read.</p></div>
+      <div class="vid" style="width:100%"><video src="videos/wd_wrong_object.mp4" poster="videos/wd_wrong_object.jpg" muted loop playsinline preload="auto"></video></div>
+      <p class="small"><b>Fix:</b> record every scene twice, naming a different object each time: same pixels, only the words differ</p>
+      <p class="small">Pick and place the named cube (2 steps): about 45 → <b>80</b></p>
+    </div>
+    <div class="frag grow" style="display:flex;flex-direction:column;gap:12px;min-width:0">
+      <div><div class="kicker" style="color:var(--ink)">Problem 4</div><h3 style="margin:4px 0 0">It copies the teacher’s cheats too</h3><p class="small muted">The teacher “pushed” by carrying. The student copied it and knocks things over.</p></div>
+      <div class="vid" style="width:86%"><video src="videos/wd_handleg_push.mp4" poster="videos/wd_handleg_push.jpg" muted loop playsinline preload="auto"></video></div>
+      <p class="small"><b>Fix:</b> no lifting during a push, in the teacher’s reward</p>
+      <p class="small">Push the cube to the target (1 step): 16 → <b>59</b></p>
+    </div>
+  </div>
+  <aside class="notes"><ul>
+    <li>Left: asked for the red cube, carries the blue one. The images alone predict the action most of the time, so the sentence is ignored. Paired episodes: same scene, recorded twice with a different object named. Now only the words tell them apart. About 45 to 80 (together with more data and longer training).</li>
+    <li>Right: the student copies whatever the teacher does, cheats included. With the hand path, the teacher solved push by picking the object up and carrying it (85 of 100). Its student "pushes" by grabbing and knocks the objects over. Fix in the teacher's reward: no lifting during a push. Student push 16 to 59 (the final model).</li>
+    <li>Push was also short of data: only 12% of frames, and only ever as a first command. 1,500 extra push episodes. So the final data is 3,000 paired + 1,500 push.</li>
   </ul></aside>
 </section>
 
