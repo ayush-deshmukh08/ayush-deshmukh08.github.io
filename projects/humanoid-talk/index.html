@@ -593,8 +593,7 @@ tr.hero td{font-weight:700}
 </section>
 
 <section class="step" data-sec="Results" data-t="75">
-  <div class="kicker">8 steps</div>
-  <h2>0 of 100. It stops after four</h2>
+  <h2>8 steps</h2>
   <div class="card" style="padding:12px 20px;margin-top:-4px">
     <p class="sent" style="font-size:21px;line-height:1.5"><b>1</b> pick up the cube, <b>2</b> put it on the cylinder, <b>3</b> pick up the cube, <b>4</b> put it on the target, <span class="now"><b>5</b> pick up the cube, <b>6</b> put it on the cylinder, <b>7</b> pick up the cube, <b>8</b> put it on the target</span></p>
   </div>
@@ -604,7 +603,7 @@ tr.hero td{font-weight:700}
       <div class="frag"><p><b>The model never counts steps.</b></p><p class="small muted">Every 0.1 s it only answers: “does this look finished?” If yes for half a second, the code puts “(done)” on the next command.</p></div>
       <div class="frag"><p><b>After step 4: cube on the target, arm still.</b></p><p class="small muted">In training that picture always meant “finished, stop”. Episodes were 1–2 commands, so a put-down was always the end.</p></div>
       <div class="frag"><p><b>So it stops, and keeps saying “finished”.</b></p><p class="small muted">The table never changes, so 5, 6, 7, 8 get marked half a second apart. Everything’s marked, so it’s done.</p></div>
-      <div class="frag"><p><span class="hl"><b>60 of 100 runs: 4 steps done, all 8 marked.</b></span></p><p class="small muted">6 steps gets past this point: its step 5 is the cylinder, so the arm moves and the picture changes. The teacher does all 8, 100 of 100: the memory is the problem, not the skills.</p></div>
+      <div class="frag"><p><span class="hl"><b>8 steps: 0 of 100. In 60 runs it stops after step 4, with all 8 marked.</b></span></p><p class="small muted">6 steps gets past this point: its step 5 is the cylinder, so the arm moves and the picture changes. The teacher does all 8, 100 of 100: the problem is the memory, not the skills.</p></div>
     </div>
   </div>
   <aside class="notes"><ul>
@@ -618,7 +617,6 @@ tr.hero td{font-weight:700}
 </section>
 
 <section class="step" data-sec="Results" data-t="45">
-  <div class="kicker">Where it breaks</div>
   <h2>6 steps: where the other 60 fail</h2>
   <p>Stops at step 5, pick up the cylinder: <b>25</b> · step 4: <b>15</b> · step 2: <b>13</b> · knocks something over: <b>21</b></p>
   <div class="row" style="gap:40px;margin-top:22px">
