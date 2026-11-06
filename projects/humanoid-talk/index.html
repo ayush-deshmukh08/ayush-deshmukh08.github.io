@@ -396,20 +396,23 @@ tr.hero td{font-weight:700}
     <div class="card grow">
       <h3>The student</h3>
       <p class="small">SmolVLA, 450M parameters</p>
-      <p class="small muted" style="margin-top:14px">In: front camera · wrist camera · the arm’s 6 numbers · the sentence</p>
-      <p class="small muted" style="margin-top:6px">Out: the same 5 numbers as the teacher</p>
-      <p class="small" style="margin-top:14px"><b>No object positions. No step counter.</b></p>
+      <p class="small" style="margin-top:14px"><b>In:</b> front camera · wrist camera · the sentence · the gripper’s position (x, y, z), its turn, and how open it is</p>
+      <p class="small" style="margin-top:8px"><b>Out:</b> move x, y, z · turn · open or close</p>
+      <p class="small muted" style="margin-top:14px">It is never told where the objects are or which step it’s on.</p>
     </div>
     <div class="card frag grow">
       <h3>Why it was hard</h3>
-      <p class="small"><b>Slow.</b> One try:</p>
-      <div style="display:flex;height:46px;margin:12px 0 6px;border:3px solid var(--ink);border-radius:8px;overflow:hidden;font-size:18px;font-weight:700">
+      <div style="display:flex;height:46px;margin:10px 0 6px;border:3px solid var(--ink);border-radius:8px;overflow:hidden;font-size:18px;font-weight:700">
         <div style="flex:2.5;background:var(--frame);display:flex;align-items:center;justify-content:center">teacher 2.5 h</div>
         <div style="flex:0.7;background:var(--accent);display:flex;align-items:center;justify-content:center;border-left:3px solid var(--ink)">rec.</div>
         <div style="flex:4;background:var(--paper);display:flex;align-items:center;justify-content:center;border-left:3px solid var(--ink)">train + test 4 h</div>
       </div>
-      <p class="small muted">≈ 7 hours before I see a single number</p>
-      <p class="small" style="margin-top:16px"><b>Unpredictable.</b> 20+ students trained. Adding things often made it worse.</p>
+      <p class="small muted">One try ≈ 7 hours</p>
+      <ul style="margin:12px 0 0;padding-left:24px;display:flex;flex-direction:column;gap:4px">
+        <li class="small">Small mistakes compound</li>
+        <li class="small">Pixels hide what the teacher knew</li>
+        <li class="small">Low training loss ≠ success</li>
+      </ul>
     </div>
   </div>
   <aside class="notes"><ul>
