@@ -630,6 +630,64 @@ tr.hero td{font-weight:700}
   </ul></aside>
 </section>
 
+<section class="step" data-sec="Limits" data-t="50">
+  <div class="kicker">Honest limits</div>
+  <h2>Limitations</h2>
+  <div class="row" style="gap:50px;margin-top:0;align-items:flex-start">
+    <div class="grow"><div class="frag" style="padding:12px 0;border-bottom:1.5px solid var(--line)"><p style="font-size:25px"><b>“Done” reads the picture, not the sentence</b></p><p class="small muted" style="font-size:20px;margin-top:2px">So the marks run ahead: 8 steps is 0.</p></div><div class="frag" style="padding:12px 0;border-bottom:1.5px solid var(--line)"><p style="font-size:25px"><b>No undo</b></p><p class="small muted" style="font-size:20px;margin-top:2px">A wrong “(done)” is never taken back; the skipped step is never redone.</p></div><div class="frag" style="padding:12px 0;border-bottom:1.5px solid var(--line)"><p style="font-size:25px"><b>“Done” has no release</b></p><p class="small muted" style="font-size:20px;margin-top:2px">A step counts when the object reaches its pose, even if it’s still in the gripper.</p></div></div>
+    <div class="grow"><div class="frag" style="padding:12px 0;border-bottom:1.5px solid var(--line)"><p style="font-size:25px"><b>Cylinder and push are weak</b></p><p class="small muted" style="font-size:20px;margin-top:2px">59 each (teacher 100). A tipped cylinder never appears in the data.</p></div><div class="frag" style="padding:12px 0;border-bottom:1.5px solid var(--line)"><p style="font-size:25px"><b>Not all of the reward comes from my clips</b></p><p class="small muted" style="font-size:20px;margin-top:2px">Done thresholds, time cost, the hand path, no-lift on push: set by hand.</p></div><div class="frag" style="padding:12px 0;border-bottom:1.5px solid var(--line)"><p style="font-size:25px"><b>One scene, in simulation</b></p><p class="small muted" style="font-size:20px;margin-top:2px">One cube, one cylinder, a fixed target, two fixed cameras. No real robot yet.</p></div></div>
+  </div>
+  <aside class="notes"><ul>
+    <li>The skills are not the limit: the teacher does 94-100 on everything, including 8 steps. The limit is the student knowing when a step is finished.</li>
+    <li>Done has no time dimension: e.g. pick up the cube, put it on the target, pick up the cylinder, put it on the cube. The cube gets marked done on the target while still in the gripper, then dragged toward the cylinder.</li>
+    <li>Self-check found wrong marks (93-100% of the ones it erased really weren't done) but the robot didn't redo the step.</li>
+    <li>Cylinder: grasped too high it tips, and once on its side it can't be picked up because that never happens in the data.</li>
+    <li>Scoring: I quote the normal check; strict gives 12 on 6 steps.</li>
+  </ul></aside>
+</section>
+
+<section class="step" data-sec="Limits" data-t="50">
+  <div class="kicker">Next</div>
+  <h2>What I’d fix first</h2>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px 30px;margin-top:0">
+<div class="card frag" style="padding:16px 22px"><h3 style="font-size:26px">1 · A “done” judge</h3><p class="small" style="font-size:20px">A small separate model: image + sentence → is the current step finished? Trained with frames from the <b>other</b> steps as negatives, so it has to read the text.</p></div><div class="card frag" style="padding:16px 22px"><h3 style="font-size:26px">2 · Undo</h3><p class="small" style="font-size:20px">When the judge disagrees with a mark, erase it and redo the step. Record teacher episodes that start right after a false “done”.</p></div><div class="card frag" style="padding:16px 22px"><h3 style="font-size:26px">3 · “Done” with time and release</h3><p class="small" style="font-size:20px">The object must stay there until a later command moves it, and the gripper must let go.</p></div><div class="card frag" style="padding:16px 22px"><h3 style="font-size:26px">4 · Learn from its own long runs</h3><p class="small" style="font-size:20px">Run the student on long sentences, have the teacher label what it should have done, retrain (DAgger).</p></div>
+  </div>
+  <p class="small muted" style="margin-top:16px">Gate: 8 steps off 0, 6 steps well above 40. The teacher already shows the skills are there.</p>
+  <aside class="notes"><ul>
+    <li>Cheapest, highest leverage first. The 8-step failure is a supervision problem, not a capacity problem, so a bigger model wouldn't fix it.</li>
+    <li>The done judge's negatives are the key: the same image under a sentence where the current command is a later repeat, and frames from other steps of the same episode. Then "looks finished" isn't enough; it has to read which step.</li>
+    <li>Cost reality: one full pipeline is about 7-10 hours on two 4090s, so one serious experiment a day. Gate on 50 layouts, confirm on 100.</li>
+  </ul></aside>
+</section>
+
+<section class="step" data-sec="Scaling" data-t="150">
+  <div class="kicker">Scaling</div>
+  <h2>Six ways to scale it</h2>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:22px 26px;margin-top:0">
+<div class="card frag" style="padding:16px 22px;display:flex;flex-direction:column;gap:6px"><div class="kicker" style="color:var(--ink)">1 · Objects</div><h3 style="margin:0;font-size:27px">More, and new objects</h3><p class="small" style="font-size:20px">Markerless 6-DoF tracking instead of printed markers. The reward is per object, so a new object is just new data.</p></div><div class="card frag" style="padding:16px 22px;display:flex;flex-direction:column;gap:6px"><div class="kicker" style="color:var(--ink)">2 · Skills</div><h3 style="margin:0;font-size:27px">More skills</h3><p class="small" style="font-size:20px">Pour, wipe, open a drawer. Here the path’s shape matters, and the template already keeps full curved paths.</p></div><div class="card frag" style="padding:16px 22px;display:flex;flex-direction:column;gap:6px"><div class="kicker" style="color:var(--ink)">3 · Length</div><h3 style="margin:0;font-size:27px">Longer tasks</h3><p class="small" style="font-size:20px">A done judge plus undo. A language model can write the sentence; the robot keeps its own place.</p></div><div class="card frag" style="padding:16px 22px;display:flex;flex-direction:column;gap:6px"><div class="kicker" style="color:var(--ink)">4 · Data</div><h3 style="margin:0;font-size:27px">Human video at scale</h3><p class="small" style="font-size:20px">Many people, many kitchens, egocentric video. Free “done” labels: a clip ends when its skill does.</p></div><div class="card frag" style="padding:16px 22px;display:flex;flex-direction:column;gap:6px"><div class="kicker" style="color:var(--ink)">5 · Body</div><h3 style="margin:0;font-size:27px">Humanoids and hands</h3><p class="small" style="font-size:20px">The reward never mentions my arm or the robot’s, so the same clips train any body. No retargeting.</p></div><div class="card frag" style="padding:16px 22px;display:flex;flex-direction:column;gap:6px"><div class="kicker" style="color:var(--ink)">6 · Real world</div><h3 style="margin:0;font-size:27px">Off the simulator</h3><p class="small" style="font-size:20px">Randomise the sim, add a little real data. The same object tracker can score real runs, so RL works on hardware too.</p></div>
+  </div>
+  <aside class="notes"><ul>
+    <li>Opening: "Before scaling anything I'd fix the done signal; then scale along six axes, and the object-centric reward is what makes most of them cheap."</li>
+    <li>1 Objects: replace ArUco with markerless 6-DoF object pose tracking (FoundationPose-style). Needs a sim asset (scan or mesh) per object. The reward scores 8 corners of whatever object, so nothing else changes. Grasp diversity comes from the teacher, not the clips.</li>
+    <li>2 Skills: my three skills were straight lines, so the clips collapsed to start, end and a 3 cm window. For skills where shape matters (pour, wipe, insert, open a drawer) the full averaged path and per-checkpoint windows from the first version carry over directly, plus orientation, which the 8 corners already encode. A skill library: skills x object categories.</li>
+    <li>3 Length: done judge with negatives, undo, done with time and release. Memory stays in the policy's input: the external script lost to marks (65/38 vs 81/40). A planner or VLM can turn a goal into the command sentence; the VLA executes and marks its own progress.</li>
+    <li>4 Data: the bottleneck moves from my 43 clips to large egocentric datasets and our own recordings. Each clip gives an object track; its end is a free "done" label for the judge. The teacher stays the data engine: unlimited robot data in exactly the cameras the VLA needs.</li>
+    <li>5 Body: the clips say what happens to the object; RL finds how this body does it. Only the hand path and the action space change. That avoids retargeting human hand motion onto a robot hand, which is the lossiest step in learning from human video. For a humanoid: keep a hierarchy, a whole-body controller for balance and locomotion, the manipulation teacher on the hands on top. Bimanual is natural: the reward still only scores objects.</li>
+    <li>6 Real world: domain randomisation (mass, friction, lighting, cameras), then a little real teleop or DAgger correction. The object tracker that reads human video can score real robot rollouts with the same reward, and the done judge doubles as a success detector: filtered autonomous data collection and real-world RL fine-tuning without hand-labelling.</li>
+    <li>What I wouldn't do first: RL directly on the VLA (too slow while a privileged teacher works), memory in an external planner (it lost), a bigger model before the done signal is fixed.</li>
+  </ul></aside>
+</section>
+
+<section class="step" data-sec="End" data-t="20">
+  <div class="kicker">Ayush Deshmukh</div>
+  <h1 style="margin-top:20px">The skills compose.<br>Knowing when a step is done is what’s left.</h1>
+  <p class="sub" style="margin-top:28px">Thank you · questions</p>
+  <aside class="notes"><ul>
+    <li>"So: the skills already compose. Fix how the robot knows it's done, then scale with human video, and the object-centric reward carries over to any body, including a humanoid."</li>
+    <li>Point them to the project page for everything that didn't work, with videos.</li>
+  </ul></aside>
+</section>
+
 <div id="blank"></div>
 <div id="foot"><div id="secs"></div><div id="count"></div></div>
 </div>
