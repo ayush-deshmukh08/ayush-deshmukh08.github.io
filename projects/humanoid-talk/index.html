@@ -389,6 +389,92 @@ tr.hero td{font-weight:700}
   </ul></aside>
 </section>
 
+<section class="step" data-sec="Student" data-t="60">
+  <div class="kicker">Step 4 · Distillation · H3</div>
+  <h2>Copying the teacher into a VLA: the hardest part</h2>
+  <div class="row" style="gap:34px;margin-top:10px;align-items:stretch">
+    <div class="card grow">
+      <h3>The student</h3>
+      <p class="small">SmolVLA, 450M parameters</p>
+      <p class="small muted" style="margin-top:14px">In: front camera · wrist camera · the arm’s 6 numbers · the sentence</p>
+      <p class="small muted" style="margin-top:6px">Out: the same 5 numbers as the teacher</p>
+      <p class="small" style="margin-top:14px"><b>No object positions. No step counter.</b></p>
+    </div>
+    <div class="card frag grow">
+      <h3>Why it was hard</h3>
+      <p class="small"><b>Slow.</b> One try:</p>
+      <div style="display:flex;height:46px;margin:12px 0 6px;border:3px solid var(--ink);border-radius:8px;overflow:hidden;font-size:18px;font-weight:700">
+        <div style="flex:2.5;background:var(--frame);display:flex;align-items:center;justify-content:center">teacher 2.5 h</div>
+        <div style="flex:0.7;background:var(--accent);display:flex;align-items:center;justify-content:center;border-left:3px solid var(--ink)">rec.</div>
+        <div style="flex:4;background:var(--paper);display:flex;align-items:center;justify-content:center;border-left:3px solid var(--ink)">train + test 4 h</div>
+      </div>
+      <p class="small muted">≈ 7 hours before I see a single number</p>
+      <p class="small" style="margin-top:16px"><b>Unpredictable.</b> 20+ students trained. Adding things often made it worse.</p>
+    </div>
+  </div>
+  <aside class="notes"><ul>
+    <li>The student is SmolVLA, 450M, from the public base weights. It gets two camera images, the arm's own position, and the sentence. Nothing else: no object positions, no step counter. It outputs the same hand movements as the teacher.</li>
+    <li>This was the hardest part. Slow: train the teacher (2.5 h), record 4,500 episodes with cameras (40 min), build the dataset, fine-tune 32K steps and test (about 4 h). Seven hours before I see whether an idea worked.</li>
+    <li>And unpredictable: I trained over 20 students. Things that should help often didn't: more camera history, unfreezing the vision encoder, both worse than the plain student. So I changed one thing at a time and kept every result.</li>
+  </ul></aside>
+</section>
+
+<section class="step" data-sec="Student" data-t="120">
+  <div class="kicker">Step 4 · Distillation</div>
+  <h2>Four problems copying the teacher</h2>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:26px 30px;margin-top:4px">
+    <div class="card frag" style="padding:18px 22px;display:flex;gap:18px;align-items:center">
+      <div><div class="kicker" style="color:var(--ink)">Problem 1</div><h3 style="margin-top:6px;font-size:27px">Clean demos</h3><p class="small muted" style="font-size:20px">It never saw a mistake, so it couldn’t recover.</p><p class="small" style="font-size:20px;margin-top:6px"><b>Fix:</b> add noise while recording; the teacher corrects it</p><p class="small" style="font-size:20px;margin-top:4px">6 → <b>52</b> / 100</p></div>
+    </div>
+    <div class="card frag" style="padding:18px 22px;display:flex;gap:18px;align-items:center">
+      <div><div class="kicker" style="color:var(--ink)">Problem 2</div><h3 style="margin-top:6px;font-size:27px">A jerky teacher</h3><p class="small muted" style="font-size:20px">Full left, full right, every step. The student learned the average.</p><p class="small" style="font-size:20px;margin-top:6px"><b>Fix:</b> the arm keeps 95% of its motion, takes 5% of the new one</p><p class="small" style="font-size:20px;margin-top:4px">0 on all but push → <b>learns every skill</b></p></div>
+    </div>
+    <div class="card frag" style="padding:18px 22px;display:flex;gap:18px;align-items:center">
+      <div class="vid" style="width:300px;flex:none"><video src="videos/wd_wrong_object.mp4" poster="videos/wd_wrong_object.jpg" muted loop playsinline preload="auto"></video></div><div><div class="kicker" style="color:var(--ink)">Problem 3</div><h3 style="margin-top:6px;font-size:27px">It ignores the sentence</h3><p class="small muted" style="font-size:20px">Asked for one object, carries the other.</p><p class="small" style="font-size:20px;margin-top:6px"><b>Fix:</b> same scene, recorded twice, once per object</p><p class="small" style="font-size:20px;margin-top:4px">45 → <b>80</b> / 100</p></div>
+    </div>
+    <div class="card frag" style="padding:18px 22px;display:flex;gap:18px;align-items:center">
+      <div><div class="kicker" style="color:var(--ink)">Problem 4</div><h3 style="margin-top:6px;font-size:27px">Push is the weakest skill</h3><p class="small muted" style="font-size:20px">Too little push data.</p><p class="small" style="font-size:20px;margin-top:6px"><b>Fix:</b> 1,500 extra push episodes</p><p class="small" style="font-size:20px;margin-top:4px">23 → <b>44</b> / 100</p></div>
+    </div>
+  </div>
+  <aside class="notes"><ul>
+    <li>1. Trained on perfect demos it fit the data but scored 6/100 on pick-and-place: one small error and it's somewhere it has never been. While recording I push the teacher off course with noise; the label stays the teacher's correct action, so the student sees how to recover. 52/100.</li>
+    <li>2. The RL teacher is bang-bang: about 30% of steps flip sign. It still works, but a student copying it learns the average command, which goes nowhere: 0 on everything but push. An action-change penalty and smoothing the labels afterwards barely helped. So the smoothing went into the arm and the teacher was retrained with it. Lesson: a good teacher isn't the same as a teachable teacher.</li>
+    <li>3. The images give away which object to move most of the time, so it never learned to read. Record each scene twice, "the cube" and "the cylinder": same pixels, so only the words can tell them apart. 45 to 80.</li>
+    <li>4. Push was weakest. 1,500 extra push episodes: 23 to 44. That's why the data is 3,000 paired + 1,500 push.</li>
+    <li>Numbers 2-4 are from earlier versions of the pipeline.</li>
+  </ul></aside>
+</section>
+
+<section class="step" data-sec="Student" data-t="60">
+  <div class="kicker">Step 4 · Distillation</div>
+  <h2>Does it transfer? So far</h2>
+  <div class="row" style="gap:40px;margin-top:6px;align-items:stretch">
+    <div class="card grow" style="padding:20px 26px">
+      <h3>What it practised (1–2 commands)</h3>
+      <table style="width:100%;margin-top:4px">
+        <tr><td>Pick up the cube</td><td style="text-align:right"><b>94</b></td></tr>
+        <tr><td>Cube to the target</td><td style="text-align:right"><b>97</b></td></tr>
+        <tr><td>Cube on the cylinder</td><td style="text-align:right"><b>96</b></td></tr>
+        <tr><td>Cylinder on the cube</td><td style="text-align:right"><b>81</b></td></tr>
+        <tr><td>Push the cube</td><td style="text-align:right"><b>59</b></td></tr>
+      </table>
+      <p class="small muted" style="margin-top:10px">Success / 100</p>
+    </div>
+    <div class="frag grow" style="display:flex;flex-direction:column">
+      <h3>Longer, with no memory</h3>
+      <div class="vid"><video src="videos/wd_no_memory.mp4" poster="videos/wd_no_memory.jpg" muted loop playsinline preload="auto"></video></div>
+      <p style="margin-top:14px">4 steps: <b>14</b> · 6 steps: <b>12</b></p>
+      <p class="small"><span class="hl"><b>It loops. It can’t tell step 2 from step 4.</b></span></p>
+    </div>
+  </div>
+  <aside class="notes"><ul>
+    <li>On what it practised, the student is close to the teacher: 94-97 on cube tasks. Cylinder and push are weaker: the can is harder to grasp from images, and push was always the weakest skill.</li>
+    <li>But give it the whole 6-step sentence with no memory and it falls apart: 4 steps 14, 6 steps 12, almost never in order. Watch it: it finishes a pick and place, then does the same pick and place again.</li>
+    <li>Why: the teacher was told which step it's on. The student only has the camera, and after step 2 the table can look exactly like after step 4. The skills transferred. The bookkeeping didn't.</li>
+    <li>Honest: the left table is the final student (it has the memory marks, which barely matter at 1-2 commands); 14 and 12 are from an earlier student with the whole sentence and no memory.</li><li>Next: memory.</li>
+  </ul></aside>
+</section>
+
 <div id="blank"></div>
 <div id="foot"><div id="secs"></div><div id="count"></div></div>
 </div>
