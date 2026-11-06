@@ -37,6 +37,7 @@ p,li{font-size:28px;line-height:1.35;margin:0}
 b,strong{font-weight:700}
 
 /* boxes */
+.gamebtn{display:block;text-decoration:none;color:var(--ink);cursor:pointer;transition:transform .12s,box-shadow .12s}.gamebtn:hover{transform:translate(-3px,-3px);box-shadow:10px 10px 0 var(--ink);background:#fff6d6}
 .card{background:var(--paper);border:3px solid var(--ink);border-radius:10px;box-shadow:7px 7px 0 var(--ink);padding:26px 30px}
 .vid{border:3px solid var(--ink);border-radius:10px;box-shadow:7px 7px 0 var(--ink);background:#111;overflow:hidden;position:relative}
 .vid video{display:block;width:100%;height:auto;cursor:pointer}
@@ -630,6 +631,16 @@ tr.hero td{font-weight:700}
   <aside class="notes"><ul>
     <li>Of 100 runs of the 6-step task, the failures stop at step 5, picking up the cylinder (25), step 4 (15) and step 2 (13); 21 runs knock something over.</li>
     <li>Left: the cylinder is the hardest object to grip from images and gets knocked over. Right: the same early-done problem as the 8-step task, on a smaller scale.</li>
+  </ul></aside>
+</section>
+
+<section class="step" data-sec="Play" data-t="30">
+  <div class="kicker">Try it</div>
+  <h2>Play with the robot, live</h2>
+  <p class="sub" style="margin-top:-6px">The same student model, running on my GPU right now.</p>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:28px;margin-top:30px"><a class="card frag gamebtn" href="https://ayush-deshmukh08.github.io/projects/play/?game=sabotage" target="_blank" rel="noopener"><h3 style="margin:0;font-size:30px">Sabotage the robot ↗</h3><p class="small muted" style="margin:10px 0 0">Pick a task, then mess with it once. You win if it isn’t really done when the robot stops.</p></a><a class="card frag gamebtn" href="https://ayush-deshmukh08.github.io/projects/play/?game=tictactoe" target="_blank" rel="noopener"><h3 style="margin:0;font-size:30px">Tic-tac-toe ↗</h3><p class="small muted" style="margin:10px 0 0">You’re O, the robot is X. It has to pick up its piece and place it on the square itself.</p></a><a class="card frag gamebtn" href="https://ayush-deshmukh08.github.io/projects/play/?game=playground" target="_blank" rel="noopener"><h3 style="margin:0;font-size:30px">Build a sentence ↗</h3><p class="small muted" style="margin:10px 0 0">Chain up to ten commands and watch it work through them.</p></a></div>
+  <aside class="notes"><ul>
+    <li>Click one to show it live, or just point to it. Runs on my own GPU through a tunnel, so it can be offline: the videos are the backup.</li>
   </ul></aside>
 </section>
 
