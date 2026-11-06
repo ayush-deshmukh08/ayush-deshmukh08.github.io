@@ -309,7 +309,7 @@ tr.hero td{font-weight:700}
     </div>    <div style="align-self:center;font-size:34px;font-weight:700">→</div>
     <div class="card frag grow" style="position:relative;padding-top:30px">
       <div style="position:absolute;top:-20px;left:24px;width:40px;height:40px;border-radius:50%;background:var(--accent);border:3px solid var(--ink);font-weight:800;font-size:20px;line-height:34px;text-align:center">3</div>
-      <h3>Laid on each command</h3><p class="small muted">From the object to where the sentence says. Paid per checkpoint, in order.</p>
+      <h3>Laid on each command</h3><p class="small muted">Hand → object, then object → where the sentence says. Paid per checkpoint, in order.</p>
     </div>
   </div>
   <aside class="notes"><ul>
@@ -355,6 +355,52 @@ tr.hero td{font-weight:700}
     <li>What didn't work: single commands only. It couldn't even finish a push from its start pose (4 vs 79 in an earlier version). It needs to see the hand-offs. And training on each full task (my first plan) means it has seen the task.</li>
     <li>Result: up to 8 steps, 94-100. H2 holds for the teacher: skills plus hand-offs chain. But it's told which step it's on. The student won't be. That's the memory problem.</li>
     <li>Next: step 4, copying it into the VLA.</li>
+  </ul></aside>
+</section>
+
+<section class="step" data-sec="Teacher" data-t="60">
+  <div class="kicker">Step 3 · The teacher</div>
+  <h2>The training loop</h2>
+  <svg width="1600" height="900" viewBox="0 0 1600 900" style="position:absolute;left:0;top:0;pointer-events:none;color:var(--ink)">
+    <defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs>
+    <g fill="none" stroke="currentColor" stroke-width="3.5" marker-end="url(#ah)">
+      <path d="M330,421 Q330,290 592,290"/>
+      <path d="M1008,290 Q1270,290 1270,421"/>
+      <path d="M1270,599 Q1270,730 1008,730"/>
+      <path d="M592,730 Q330,730 330,599"/>
+    </g>
+    <text x="400" y="768" font-size="20" fill="currentColor" font-family="inherit" opacity=".7">next round</text>
+  </svg>
+  <div class="card frag" style="position:absolute;left:130px;top:425px;width:400px;height:170px;padding:16px 22px">
+    <div style="display:flex;gap:12px;align-items:center"><div style="width:36px;height:36px;border-radius:50%;background:var(--accent);border:3px solid var(--ink);font-weight:800;font-size:18px;line-height:30px;text-align:center;flex:none">1</div><h3 style="margin:0">Reset</h3></div>
+    <p class="small" style="margin-top:8px">New random table, arm pose and 1–2 commands</p>
+    <p class="small muted" style="font-size:19px;margin-top:4px">only robots whose episode ended</p>
+  </div>
+  <div class="card frag" style="position:absolute;left:600px;top:205px;width:400px;height:170px;padding:16px 22px">
+    <div style="display:flex;gap:12px;align-items:center"><div style="width:36px;height:36px;border-radius:50%;background:var(--accent);border:3px solid var(--ink);font-weight:800;font-size:18px;line-height:30px;text-align:center;flex:none">2</div><h3 style="margin:0">Act</h3></div>
+    <p class="small" style="margin-top:8px">16,384 robots × 32 steps</p>
+    <p class="small muted" style="font-size:19px;margin-top:4px">= 524K steps, about 6 s</p>
+  </div>
+  <div class="card frag" style="position:absolute;left:1070px;top:425px;width:400px;height:170px;padding:16px 22px">
+    <div style="display:flex;gap:12px;align-items:center"><div style="width:36px;height:36px;border-radius:50%;background:var(--accent);border:3px solid var(--ink);font-weight:800;font-size:18px;line-height:30px;text-align:center;flex:none">3</div><h3 style="margin:0">Score</h3></div>
+    <p class="small" style="margin-top:8px">Hand → object, then object → goal: +1 per checkpoint</p>
+    <p class="small muted" style="font-size:19px;margin-top:4px">+5 when done · −0.02 per step</p>
+  </div>
+  <div class="card frag" style="position:absolute;left:600px;top:645px;width:400px;height:170px;padding:16px 22px">
+    <div style="display:flex;gap:12px;align-items:center"><div style="width:36px;height:36px;border-radius:50%;background:var(--accent);border:3px solid var(--ink);font-weight:800;font-size:18px;line-height:30px;text-align:center;flex:none">4</div><h3 style="margin:0">Update</h3></div>
+    <p class="small" style="margin-top:8px">PPO: 5 passes over the batch</p>
+    <p class="small muted" style="font-size:19px;margin-top:4px">a slightly better policy</p>
+  </div>
+  <div class="frag" style="position:absolute;left:600px;top:445px;width:400px;text-align:center">
+    <div class="big" style="font-size:58px">×1,000</div>
+    <p class="small muted" style="margin-top:8px">≈ 520M steps · under 2 hours</p>
+  </div>
+  <aside class="notes"><ul>
+    <li>1 Reset: every robot whose episode ended (20 s max) gets a new random layout, a random arm pose and one or two commands in a sensible order. 10% start with one object already stacked.</li>
+    <li>2 Act: all 16,384 robots run the current policy for 32 steps of 0.1 s. That's 524,288 tries in about 6 seconds.</li>
+    <li>3 Score: two paths, same rule. First the hand's path: a straight line from the gripper to the object, 20 checkpoints, 3 cm. Then the object's path to the goal. About +1 per checkpoint, +5 when a command is done, a small cost per step.</li>
+    <li>4 Update: PPO. It looks at which actions led to more reward than expected, and nudges the policy toward them. 5 passes over the batch, in 4 chunks, small steps so it doesn't jump too far.</li>
+    <li>Then act again with the better policy. 1,000 rounds, about 520 million steps, under 2 hours on one GPU.</li>
   </ul></aside>
 </section>
 
