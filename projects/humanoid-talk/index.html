@@ -369,11 +369,7 @@ tr.hero td{font-weight:700}
         <div style="flex:4;background:var(--paper);display:flex;align-items:center;justify-content:center;border-left:3px solid var(--ink)">train + test 4 h</div>
       </div>
       <p class="small muted">One try ≈ 7 hours</p>
-      <ul style="margin:12px 0 0;padding-left:24px;display:flex;flex-direction:column;gap:4px">
-        <li class="small">Compounding error (covariate shift)</li>
-        <li class="small">Privileged-information gap: teacher sees state, student sees pixels</li>
-        <li class="small">Low imitation loss ≠ task success</li>
-      </ul>
+      <ul style="margin:12px 0 0;padding-left:22px;display:flex;flex-direction:column;gap:8px"><li><p class="small" style="font-size:21px"><b>Compounding error</b></p><p class="small muted" style="font-size:18px;line-height:1.3">It only learned from the teacher’s clean runs. One small slip puts it somewhere it has never been, so its next move is worse, and it keeps drifting.</p></li><li><p class="small" style="font-size:21px"><b>Information gap</b></p><p class="small muted" style="font-size:18px;line-height:1.3">The teacher knows exact positions and which step it’s on. The student only sees pixels: the gripper hides the cube, depth is a guess, and no image shows the step.</p></li><li><p class="small" style="font-size:21px"><b>Low loss ≠ success</b></p><p class="small muted" style="font-size:18px;line-height:1.3">Copying single frames well doesn’t mean it finishes the task. Only a full test run tells you, and that takes hours.</p></li></ul>
     </div>
   </div>
   <aside class="notes"><ul>
