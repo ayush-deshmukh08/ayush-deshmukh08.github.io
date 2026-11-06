@@ -489,7 +489,10 @@ tr.hero td{font-weight:700}
     <div class="frag grow" style="display:flex;flex-direction:column">
       <h3>Longer, with no memory</h3>
       <div class="vid"><video src="videos/wd_no_memory.mp4" poster="videos/wd_no_memory.jpg" muted loop playsinline preload="auto"></video></div>
-      <p style="margin-top:14px">4 steps: <b>1</b> · 6 steps: <b>0</b> <span class="small muted">all steps, in order, out of 100</span></p>
+      <div class="row" style="gap:18px;margin-top:12px;align-items:stretch">
+        <div class="grow"><p class="small muted">End result looks right</p><p>4 steps: <b>14</b> · 6 steps: <b>12</b></p><p class="small" style="color:var(--bad);font-size:19px">Misleading: it gets there by redoing steps, out of order</p></div>
+        <div class="grow"><p class="small muted">All steps, in order</p><p>4 steps: <b>1</b> · 6 steps: <b>0</b></p><p class="small muted" style="font-size:19px">The real number</p></div>
+      </div>
       <p class="small"><span class="hl"><b>It loops. It can’t tell step 2 from step 4.</b></span></p>
     </div>
   </div>
@@ -633,11 +636,13 @@ tr.hero td{font-weight:700}
       <p>In <b>60 of 100</b> runs: exactly 4 steps done, all 8 marked.</p>
       <p class="small muted" style="margin-top:10px">After step 4 the table looks exactly like a finished 4-step task.</p>
       <p style="margin-top:20px"><span class="hl"><b>“Done” reads the image, not the sentence.</b></span></p>
-      <div class="card frag" style="margin-top:22px;padding:16px 22px">
-        <h3 style="font-size:26px">6 steps: where the failures are</h3>
-        <p class="small">Step 5, pick up the cylinder: <b>25</b> · step 4: <b>15</b> · step 2: <b>13</b></p>
-        <p class="small muted" style="font-size:19px">Two causes: marking too early, and the cylinder (the weakest object)</p>
-      </div>
+      <div class="card frag" style="margin-top:18px;padding:14px 20px">
+        <h3 style="font-size:24px">6 steps: where the failures are</h3>
+        <p class="small" style="font-size:20px">Step 5, pick up the cylinder: <b>25</b> · step 4: <b>15</b> · step 2: <b>13</b></p>
+        <div class="row" style="gap:14px;margin-top:10px">
+          <div class="grow"><div class="vid"><video src="videos/restack_fail.mp4" poster="videos/restack_fail.jpg" muted loop playsinline preload="auto"></video></div><div class="cap" style="margin-top:4px;font-size:17px">Knocks the cylinder over at step 5</div></div>
+          <div class="grow"><div class="vid"><video src="videos/restack_fail_early.mp4" poster="videos/restack_fail_early.jpg" muted loop playsinline preload="auto"></video></div><div class="cap" style="margin-top:4px;font-size:17px">Marked done too early: a step is skipped</div></div>
+        </div></div>
     </div>
   </div>
   <aside class="notes"><ul>
