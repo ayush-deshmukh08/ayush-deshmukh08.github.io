@@ -376,7 +376,7 @@ tr.hero td{font-weight:700}
   <div class="card frag" style="margin-top:26px;padding:16px 28px">
     <table style="width:100%">
       <tr><th>Then I ask for</th><th style="text-align:right">2 steps</th><th style="text-align:right">3</th><th style="text-align:right">4</th><th style="text-align:right">6</th><th style="text-align:right">8</th></tr>
-      <tr><td>Success / 100</td><td style="text-align:right"><b>100</b></td><td style="text-align:right"><b>94</b></td><td style="text-align:right"><b>100</b></td><td style="text-align:right"><b>94</b></td><td style="text-align:right"><b>100</b></td></tr>
+      <tr><td>Success out of 100 new layouts</td><td style="text-align:right"><b>100</b></td><td style="text-align:right"><b>94</b></td><td style="text-align:right"><b>100</b></td><td style="text-align:right"><b>94</b></td><td style="text-align:right"><b>100</b></td></tr>
     </table>
   </div>
   <aside class="notes"><ul>
@@ -425,18 +425,19 @@ tr.hero td{font-weight:700}
 <section class="step" data-sec="Student" data-t="120">
   <div class="kicker">Step 4 · Distillation</div>
   <h2>Four problems copying the teacher</h2>
+  <p class="small muted" style="margin-top:-18px;margin-bottom:14px">Success out of 100 new table layouts · earlier versions of the pipeline</p>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:26px 30px;margin-top:4px">
     <div class="card frag" style="padding:18px 22px;display:flex;gap:18px;align-items:center">
-      <div><div class="kicker" style="color:var(--ink)">Problem 1</div><h3 style="margin-top:6px;font-size:27px">Clean demos</h3><p class="small muted" style="font-size:20px">It never saw a mistake, so it couldn’t recover.</p><p class="small" style="font-size:20px;margin-top:6px"><b>Fix:</b> add noise while recording; the teacher corrects it</p><p class="small" style="font-size:20px;margin-top:4px">6 → <b>52</b> / 100</p></div>
+      <div><div class="kicker" style="color:var(--ink)">Problem 1</div><h3 style="margin-top:6px;font-size:27px">Clean demos</h3><p class="small muted" style="font-size:20px">It never saw a mistake, so it couldn’t recover.</p><p class="small" style="font-size:20px;margin-top:6px"><b>Fix:</b> add noise while recording; the teacher corrects it</p><p class="small" style="font-size:20px;margin-top:4px">Pick up the cube and put it on the target (2 steps): 6 → <b>52</b></p></div>
     </div>
     <div class="card frag" style="padding:18px 22px;display:flex;gap:18px;align-items:center">
-      <div><div class="kicker" style="color:var(--ink)">Problem 2</div><h3 style="margin-top:6px;font-size:27px">A jerky teacher</h3><p class="small muted" style="font-size:20px">Full left, full right, every step. The student learned the average.</p><p class="small" style="font-size:20px;margin-top:6px"><b>Fix:</b> the arm keeps 95% of its motion, takes 5% of the new one</p><p class="small" style="font-size:20px;margin-top:4px">0 on all but push → <b>learns every skill</b></p></div>
+      <div><div class="kicker" style="color:var(--ink)">Problem 2</div><h3 style="margin-top:6px;font-size:27px">A jerky teacher</h3><p class="small muted" style="font-size:20px">Full left, full right, every step. The student learned the average.</p><p class="small" style="font-size:20px;margin-top:6px"><b>Fix:</b> the arm keeps 95% of its motion, takes 5% of the new one</p><p class="small" style="font-size:20px;margin-top:4px">Pick up the cube (1 step): about 0 → <b>63</b></p></div>
     </div>
     <div class="card frag" style="padding:18px 22px;display:flex;gap:18px;align-items:center">
-      <div class="vid" style="width:300px;flex:none"><video src="videos/wd_wrong_object.mp4" poster="videos/wd_wrong_object.jpg" muted loop playsinline preload="auto"></video></div><div><div class="kicker" style="color:var(--ink)">Problem 3</div><h3 style="margin-top:6px;font-size:27px">It ignores the sentence</h3><p class="small muted" style="font-size:20px">Asked for one object, carries the other.</p><p class="small" style="font-size:20px;margin-top:6px"><b>Fix:</b> same scene, recorded twice, once per object</p><p class="small" style="font-size:20px;margin-top:4px">45 → <b>80</b> / 100</p></div>
+      <div class="vid" style="width:300px;flex:none"><video src="videos/wd_wrong_object.mp4" poster="videos/wd_wrong_object.jpg" muted loop playsinline preload="auto"></video></div><div><div class="kicker" style="color:var(--ink)">Problem 3</div><h3 style="margin-top:6px;font-size:27px">It ignores the sentence</h3><p class="small muted" style="font-size:20px">Asked for one object, carries the other.</p><p class="small" style="font-size:20px;margin-top:6px"><b>Fix:</b> same scene, recorded twice, once per object</p><p class="small" style="font-size:20px;margin-top:4px">Pick and place the named cube (2 steps): about 45 → <b>80</b></p></div>
     </div>
     <div class="card frag" style="padding:18px 22px;display:flex;gap:18px;align-items:center">
-      <div><div class="kicker" style="color:var(--ink)">Problem 4</div><h3 style="margin-top:6px;font-size:27px">Push is the weakest skill</h3><p class="small muted" style="font-size:20px">Too little push data.</p><p class="small" style="font-size:20px;margin-top:6px"><b>Fix:</b> 1,500 extra push episodes</p><p class="small" style="font-size:20px;margin-top:4px">23 → <b>44</b> / 100</p></div>
+      <div><div class="kicker" style="color:var(--ink)">Problem 4</div><h3 style="margin-top:6px;font-size:27px">Push is the weakest skill</h3><p class="small muted" style="font-size:20px">Too little push data.</p><p class="small" style="font-size:20px;margin-top:6px"><b>Fix:</b> 1,500 extra push episodes</p><p class="small" style="font-size:20px;margin-top:4px">Push the cube to the target (1 step): 23 → <b>44</b></p></div>
     </div>
   </div>
   <aside class="notes"><ul>
@@ -444,7 +445,7 @@ tr.hero td{font-weight:700}
     <li>2. The RL teacher is bang-bang: about 30% of steps flip sign. It still works, but a student copying it learns the average command, which goes nowhere: 0 on everything but push. An action-change penalty and smoothing the labels afterwards barely helped. So the smoothing went into the arm and the teacher was retrained with it. Lesson: a good teacher isn't the same as a teachable teacher.</li>
     <li>3. The images give away which object to move most of the time, so it never learned to read. Record each scene twice, "the cube" and "the cylinder": same pixels, so only the words can tell them apart. 45 to 80.</li>
     <li>4. Push was weakest. 1,500 extra push episodes: 23 to 44. That's why the data is 3,000 paired + 1,500 push.</li>
-    <li>Numbers 2-4 are from earlier versions of the pipeline.</li>
+    <li>All four are earlier versions, success out of 100 new table layouts. 1: the scripted-robot student, and 52 also uses re-planning every step. 2: the jerky student scored ~0 on everything but push (14); the smoothed one 63 on pick-up. 3: pairing came together with more data and longer training, not separated. 4: the 44 student also had the (done) marks.</li>
   </ul></aside>
 </section>
 
@@ -461,12 +462,12 @@ tr.hero td{font-weight:700}
         <tr><td>Cylinder on the cube</td><td style="text-align:right"><b>81</b></td></tr>
         <tr><td>Push the cube</td><td style="text-align:right"><b>59</b></td></tr>
       </table>
-      <p class="small muted" style="margin-top:10px">Success / 100</p>
+      <p class="small muted" style="margin-top:10px">Success out of 100 new table layouts</p>
     </div>
     <div class="frag grow" style="display:flex;flex-direction:column">
       <h3>Longer, with no memory</h3>
       <div class="vid"><video src="videos/wd_no_memory.mp4" poster="videos/wd_no_memory.jpg" muted loop playsinline preload="auto"></video></div>
-      <p style="margin-top:14px">4 steps: <b>14</b> · 6 steps: <b>12</b></p>
+      <p style="margin-top:14px">4 steps: <b>14</b> · 6 steps: <b>12</b> <span class="small muted">out of 100</span></p>
       <p class="small"><span class="hl"><b>It loops. It can’t tell step 2 from step 4.</b></span></p>
     </div>
   </div>
