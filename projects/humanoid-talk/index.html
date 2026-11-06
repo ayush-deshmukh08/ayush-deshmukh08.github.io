@@ -478,7 +478,10 @@ tr.hero td{font-weight:700}
     <div class="grow"><table style="width:100%"><tr class="frag"><td style="font-size:22px;padding:7px 12px"><b>Bigger or different models</b><br><span class="muted" style="font-size:19px">X-VLA (1B) on the jerky data; a diffusion policy from scratch; π0.5 (couldn’t get access)</span></td><td style="font-size:22px;padding:7px 12px;text-align:right;white-space:nowrap">X-VLA push: <b>7</b></td></tr><tr class="frag"><td style="font-size:22px;padding:7px 12px"><b>Smooth the labels after recording</b><br><span class="muted" style="font-size:19px">Average the next 0.5 s of the teacher’s moves</span></td><td style="font-size:22px;padding:7px 12px;text-align:right;white-space:nowrap">still ≈ the average</td></tr><tr class="frag"><td style="font-size:22px;padding:7px 12px"><b>Penalise jerky moves in the teacher’s reward</b><br><span class="muted" style="font-size:19px">Teacher barely got smoother</span></td><td style="font-size:22px;padding:7px 12px;text-align:right;white-space:nowrap">no real change</td></tr><tr class="frag"><td style="font-size:22px;padding:7px 12px"><b>More history: past moves and positions as input</b><br><span class="muted" style="font-size:19px">The extra inputs went unused</span></td><td style="font-size:22px;padding:7px 12px;text-align:right;white-space:nowrap">2–3 steps: 44 → <b>9–15</b>*</td></tr><tr class="frag"><td style="font-size:22px;padding:7px 12px"><b>Closer camera + train the vision part + an older frame</b><br><span class="muted" style="font-size:19px">More to learn, same data</span></td><td style="font-size:22px;padding:7px 12px;text-align:right;white-space:nowrap">worse</td></tr><tr class="frag"><td style="font-size:22px;padding:7px 12px"><b>“Done” constants taken from my clips</b><br><span class="muted" style="font-size:19px">Stricter teacher, weaker student</span></td><td style="font-size:22px;padding:7px 12px;text-align:right;white-space:nowrap">4 steps: <b>17</b>* (worst)</td></tr></table>
       <p class="small muted" style="margin-top:8px;font-size:18px">Out of 100 · *end result right, any order · earlier versions</p>
     </div>
-    <div id="dis-vid" style="width:430px;flex:none"></div>
+    <div id="dis-vid" class="frag" style="width:430px;flex:none">
+      <div class="vid"><video src="videos/stud_derived.mp4" poster="videos/stud_derived.jpg" muted loop playsinline preload="auto"></video></div>
+      <div class="cap" style="margin-top:6px;font-size:19px">“Done” constants from the clips: asked for the cube, goes for the cylinder (2×)</div>
+    </div>
   </div>
   <aside class="notes"><ul>
     <li>Models: on the jerky teacher's data I also trained X-VLA (1B) and a diffusion-transformer policy from scratch. X-VLA pushed 7 of 100, SmolVLA on smoothed labels 2. So the data was the problem, not the model. π0.5 was blocked by a gated tokenizer. SmolVLA also fits a 24 GB card with room for the simulator.</li>
@@ -628,8 +631,10 @@ tr.hero td{font-weight:700}
       <p class="small muted" style="margin-top:8px;font-size:18px">In order, out of 100 · *end result right, any order · earlier versions</p>
     </div>
     <div style="width:430px;flex:none">
-      <div class="vid"><video src="videos/wd_cliptol_burst.mp4" poster="videos/wd_cliptol_burst.jpg" muted loop playsinline preload="auto"></video></div>
-      <div class="cap" style="margin-top:6px;font-size:19px">The core problem: marks burst ahead (8 of 8 marked, 4 done)</div>
+      <div class="vid" style="width:390px"><video src="videos/wd_cliptol_burst.mp4" poster="videos/wd_cliptol_burst.jpg" muted loop playsinline preload="auto"></video></div>
+      <div class="cap" style="margin-top:4px;font-size:17px">The core problem: marks burst ahead (8 marked, 4 done)</div>
+      <div class="vid frag" style="width:390px;margin-top:14px"><video src="videos/stud_pause.mp4" poster="videos/stud_pause.jpg" muted loop playsinline preload="auto"></video></div>
+      <div class="cap" style="margin-top:4px;font-size:17px">Trained with pauses: lifts the cube, never marks it done, stalls (2×)</div>
     </div>
   </div>
   <aside class="notes"><ul>
