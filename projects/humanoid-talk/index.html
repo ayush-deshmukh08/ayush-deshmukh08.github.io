@@ -282,15 +282,15 @@ tr.hero td{font-weight:700}
       <h3 style="margin-top:22px">Reward: get the cube closer to the goal</h3><p class="small muted">It pushes the cube instead of lifting it.</p>
     </div>
     <div class="frag grow">
-      <div class="vid"><video src="videos/fail_hold_up.mp4" poster="videos/fail_hold_up.jpg" muted loop playsinline preload="auto"></video></div>
-      <h3 style="margin-top:22px">Robot plays back motions from my clips</h3><p class="small muted">Too imprecise. Lifts it and holds it up forever.</p>
+      <div class="vid"><video src="videos/fail_never_release.mp4" poster="videos/fail_never_release.jpg" muted loop playsinline preload="auto"></video></div>
+      <h3 style="margin-top:22px">Reward: pay for holding it, and for letting go at the goal</h3><p class="small muted">It never lets go. It flickers the gripper to collect both.</p>
     </div>
   </div>
   <p class="frag" style="margin-top:30px"><span class="hl"><b>I was writing the reward by hand, and it got cheated. So the clips define the reward.</b></span></p>
   <aside class="notes"><ul>
     <li>Left: a hand-written reward, "pay for the cube being close to the goal". Shoving is easier than grasping, so it pushed it onto the target. Half my "98% success" were pushes; I only caught it by watching the videos.</li>
-    <li>Right: my first plan for the clips. Learn a small set of motions from them (lift, put down, push, about 2 seconds each), and let RL choose which motion to play, instead of moving the arm directly. The motions play blind, no correction mid-motion, so they're too imprecise: stacking worked about 1% of the time vs 98% with normal arm control. Here it lifted the cube and never put it down.</li>
-    <li>And the bigger problem: I was still writing the reward. The clips only decided how the arm moved, not what success means. So I flipped it: the clips define the reward, and the robot moves however it likes.</li>
+    <li>Right: a staged reward. Pay while holding the cube (gripper closed past a threshold), pay for success once it's at the goal with the gripper open past the same threshold. It parked the gripper right at the threshold and flickered across it every step, collecting "holding" and "success" in turn. Reached "placed" 99.6% of the time, real success 0 of 100.</li>
+    <li>Every reward I wrote, it found the loophole, and every cheat looked like progress on the curve; I only saw them in the videos. So I stopped writing rewards per task: the clips define one reward for everything.</li>
   </ul></aside>
 </section>
 
