@@ -578,10 +578,10 @@ tr.hero td{font-weight:700}
   <div class="row" style="gap:36px;margin-top:20px;align-items:flex-start">
     <div style="width:560px;flex:none"><div class="vid"><video src="videos/restack8_marks_race.mp4" poster="videos/restack8_marks_race.jpg" muted loop playsinline preload="auto"></video></div><div class="cap" style="margin-top:6px;font-size:19px">After step 4 it marks everything and stops</div></div>
     <div class="grow" style="display:flex;flex-direction:column;gap:14px">
-      <div class="frag"><p><b>Steps 5–8 are steps 1–4 again.</b></p><p class="small muted">After step 4 the cube is on the target. That's also how step 8 ends.</p></div>
-      <div class="frag"><p><b>So it thinks it's finished.</b></p><p class="small muted">In training, a put-down always ended the episode. Cube down, arm still: stop.</p></div>
-      <div class="frag"><p><b>It stops moving, and the marks pile up.</b></p><p class="small muted">Nothing on the table changes, so “done” stays on. Steps 5, 6, 7, 8 get marked half a second apart.</p></div>
-      <div class="frag"><p><span class="hl"><b>60 of 100 runs: 4 steps done, all 8 marked.</b></span></p><p class="small muted">The teacher does all 8 steps, 100 of 100. The memory is the problem, not the skills.</p></div>
+      <div class="frag"><p><b>The model never counts steps.</b></p><p class="small muted">Every 0.1 s it only answers: “does this look finished?” If yes for half a second, the code puts “(done)” on the next command.</p></div>
+      <div class="frag"><p><b>After step 4: cube on the target, arm still.</b></p><p class="small muted">In training that picture always meant “finished, stop”. Episodes were 1–2 commands, so a put-down was always the end.</p></div>
+      <div class="frag"><p><b>So it stops, and keeps saying “finished”.</b></p><p class="small muted">The table never changes, so 5, 6, 7, 8 get marked half a second apart. Everything’s marked, so it’s done.</p></div>
+      <div class="frag"><p><span class="hl"><b>60 of 100 runs: 4 steps done, all 8 marked.</b></span></p><p class="small muted">6 steps gets past this point: its step 5 is the cylinder, so the arm moves and the picture changes. The teacher does all 8, 100 of 100: the memory is the problem, not the skills.</p></div>
     </div>
   </div>
   <aside class="notes"><ul>
