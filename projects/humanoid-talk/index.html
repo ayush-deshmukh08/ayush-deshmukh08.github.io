@@ -357,8 +357,8 @@ tr.hero td{font-weight:700}
     <div class="card grow">
       <h3>The student</h3>
       <p class="small">SmolVLA, 450M parameters</p>
-      <p class="small" style="margin-top:14px"><b>In:</b> front camera · wrist camera · the sentence · the gripper’s position (x, y, z), its turn, and how open it is</p>
-      <p class="small" style="margin-top:8px"><b>Out:</b> move x, y, z · turn · open or close</p>
+      <p class="small" style="margin-top:14px"><b>In:</b> front RGB · wrist RGB · language instruction · proprioception: end-effector position (x, y, z), yaw (sin, cos), gripper width</p>
+      <p class="small" style="margin-top:8px"><b>Out:</b> end-effector Δx, Δy, Δz · Δyaw · gripper command · done</p>
       <p class="small muted" style="margin-top:14px">It is never told where the objects are or which step it’s on.</p>
     </div>
     <div class="card frag grow">
