@@ -473,6 +473,26 @@ tr.hero td{font-weight:700}
 
 <section class="step" data-sec="Student" data-t="60">
   <div class="kicker">Step 4 · Distillation</div>
+  <h2>Other things I tried for the student</h2>
+  <div class="row" style="gap:36px;margin-top:0;align-items:flex-start">
+    <div class="grow"><table style="width:100%"><tr class="frag"><td style="font-size:22px;padding:7px 12px"><b>Bigger or different models</b><br><span class="muted" style="font-size:19px">X-VLA (1B) on the jerky data; a diffusion policy from scratch; π0.5 (couldn’t get access)</span></td><td style="font-size:22px;padding:7px 12px;text-align:right;white-space:nowrap">X-VLA push: <b>7</b></td></tr><tr class="frag"><td style="font-size:22px;padding:7px 12px"><b>Smooth the labels after recording</b><br><span class="muted" style="font-size:19px">Average the next 0.5 s of the teacher’s moves</span></td><td style="font-size:22px;padding:7px 12px;text-align:right;white-space:nowrap">still ≈ the average</td></tr><tr class="frag"><td style="font-size:22px;padding:7px 12px"><b>Penalise jerky moves in the teacher’s reward</b><br><span class="muted" style="font-size:19px">Teacher barely got smoother</span></td><td style="font-size:22px;padding:7px 12px;text-align:right;white-space:nowrap">no real change</td></tr><tr class="frag"><td style="font-size:22px;padding:7px 12px"><b>More history: past moves and positions as input</b><br><span class="muted" style="font-size:19px">The extra inputs went unused</span></td><td style="font-size:22px;padding:7px 12px;text-align:right;white-space:nowrap">2–3 steps: 44 → <b>9–15</b>*</td></tr><tr class="frag"><td style="font-size:22px;padding:7px 12px"><b>Closer camera + train the vision part + an older frame</b><br><span class="muted" style="font-size:19px">More to learn, same data</span></td><td style="font-size:22px;padding:7px 12px;text-align:right;white-space:nowrap">worse</td></tr><tr class="frag"><td style="font-size:22px;padding:7px 12px"><b>“Done” constants taken from my clips</b><br><span class="muted" style="font-size:19px">Stricter teacher, weaker student</span></td><td style="font-size:22px;padding:7px 12px;text-align:right;white-space:nowrap">4 steps: <b>17</b>* (worst)</td></tr></table>
+      <p class="small muted" style="margin-top:8px;font-size:18px">Out of 100 · *end result right, any order · earlier versions</p>
+    </div>
+    <div id="dis-vid" style="width:430px;flex:none"></div>
+  </div>
+  <aside class="notes"><ul>
+    <li>Models: on the jerky teacher's data I also trained X-VLA (1B) and a diffusion-transformer policy from scratch. X-VLA pushed 7 of 100, SmolVLA on smoothed labels 2. So the data was the problem, not the model. π0.5 was blocked by a gated tokenizer. SmolVLA also fits a 24 GB card with room for the simulator.</li>
+    <li>Label smoothing afterwards (each label = mean of the next 0.5 s): still no better than predicting the average on x and y.</li>
+    <li>Action-change penalty in the teacher's reward (0.02): the teacher kept its skills but barely smoothed. That's why the smoothing went into the arm.</li>
+    <li>History (previous action, hand motion over the last 0.5 s and 1 s): c1-c3 9-15 vs 44 for the plain student. With little data the extra inputs were ignored or overfit.</li>
+    <li>v2: closer front camera, vision encoder and language model trained, an extra older frame: worse than the plain student. More parameters to fit, same few thousand episodes.</li>
+    <li>Rest speed and hold time from the clips instead of hand-set: a stricter teacher and the worst student of all (unstack 17, restack 7). Closer to the data isn't automatically better.</li>
+    <li>Lesson: with this little data, adding capacity or inputs hurt. What helped was changing the data: noise, smoothing in the arm, pairing, more push.</li>
+  </ul></aside>
+</section>
+
+<section class="step" data-sec="Student" data-t="60">
+  <div class="kicker">Step 4 · Distillation</div>
   <h2>Does it transfer? So far</h2>
   <div class="row" style="gap:40px;margin-top:6px;align-items:stretch">
     <div class="card grow" style="padding:20px 26px">
@@ -597,6 +617,29 @@ tr.hero td{font-weight:700}
   <aside class="notes"><ul>
     <li>A causal test, on an earlier model with the same recipe. Switch the marking off: the 4-step task never finishes, 0 of 50. Write the first two marks in advance: it skips to step 3 and finishes 42 of 50. So the marks are what it follows, not a side effect.</li>
     <li>And it isn't just replaying a script: knock the object away after it was placed, or make it drop it, and it goes back and redoes the step, because the image still drives the action.</li>
+  </ul></aside>
+</section>
+
+<section class="step" data-sec="Memory" data-t="60">
+  <div class="kicker">Step 5 · Memory</div>
+  <h2>Other memory fixes that didn’t work</h2>
+  <div class="row" style="gap:36px;margin-top:0;align-items:flex-start">
+    <div class="grow"><table style="width:100%"><tr class="frag"><td style="font-size:22px;padding:7px 12px"><b>A stricter “done” (must hold 1–1.5 s)</b><br><span class="muted" style="font-size:19px">Marks more often right, but many runs never mark</span></td><td style="font-size:22px;padding:7px 12px;text-align:right;white-space:nowrap">4 steps: 97 → <b>23</b>*</td></tr><tr class="frag"><td style="font-size:22px;padding:7px 12px"><b>Ask 3 times, take the most careful answer</b><br><span class="muted" style="font-size:19px">Slightly more accurate marks</span></td><td style="font-size:22px;padding:7px 12px;text-align:right;white-space:nowrap">no real gain</td></tr><tr class="frag"><td style="font-size:22px;padding:7px 12px"><b>“(in progress)” on the current command</b><br><span class="muted" style="font-size:19px">Tells it which step it is on, in words too</span></td><td style="font-size:22px;padding:7px 12px;text-align:right;white-space:nowrap">no change</td></tr><tr class="frag"><td style="font-size:22px;padding:7px 12px"><b>“Check your own work”: erase a mark if the scene disagrees</b><br><span class="muted" style="font-size:19px">Erased the right marks, then didn’t redo the step</span></td><td style="font-size:22px;padding:7px 12px;text-align:right;white-space:nowrap">6 steps: 13 → <b>0</b></td></tr><tr class="frag"><td style="font-size:22px;padding:7px 12px"><b>Random pauses while recording</b><br><span class="muted" style="font-size:19px">So “held still” isn’t taken as “done”</span></td><td style="font-size:22px;padding:7px 12px;text-align:right;white-space:nowrap">4 steps: 51 → <b>11</b></td></tr></table>
+      <p class="small muted" style="margin-top:8px;font-size:18px">In order, out of 100 · *end result right, any order · earlier versions</p>
+    </div>
+    <div style="width:430px;flex:none">
+      <div class="vid"><video src="videos/wd_cliptol_burst.mp4" poster="videos/wd_cliptol_burst.jpg" muted loop playsinline preload="auto"></video></div>
+      <div class="cap" style="margin-top:6px;font-size:19px">The core problem: marks burst ahead (8 of 8 marked, 4 done)</div>
+    </div>
+  </div>
+  <aside class="notes"><ul>
+    <li>Everything here attacks the same thing: the done signal fires too early, and one false mark sends every later step wrong.</li>
+    <li>Stricter done (hold 10 or 15 ticks instead of 5): marks were right 97% instead of 86%, but many runs never wrote the mark in time. 4-step end result 97 to 54 to 23. It trades false marks for stalls.</li>
+    <li>Vote of 3 samples, take the minimum: precision 72 to 84%, but in-order scores about the same.</li>
+    <li>"(in progress)" tag: the model already knew; 4 steps in order 31 vs 30.</li>
+    <li>Check your own work: every second it re-asks itself, from the image, whether the last marked command still holds, and erases the mark if not. It erased marks that were right (255 of 266 erased marks were right again) and then didn't redo the step. 6 steps in order 13 to 0.</li>
+    <li>Random pauses while recording: the arm sometimes stops while the label still says "keep going", so held still isn't automatically done. The done signal stopped firing at all: 4 steps 51 to 11.</li>
+    <li>Lesson: you can't fix the done signal from outside with thresholds. It needs to be trained on scenes that look done but aren't.</li>
   </ul></aside>
 </section>
 
