@@ -275,33 +275,22 @@ tr.hero td{font-weight:700}
 
 <section class="step" data-sec="Reward" data-t="75">
   <div class="kicker">Step 2 · The reward</div>
-  <h2>Rewards I tried first</h2>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:30px 40px;margin-top:6px">
-    <div class="frag" style="display:flex;gap:20px;align-items:center">
-      <div class="vid" style="width:440px;flex:none"><video src="videos/fail_never_release.mp4" poster="videos/fail_never_release.jpg" muted loop playsinline preload="auto"></video></div>
-      <div><h3 style="font-size:26px">Pay for holding and carrying</h3><p class="small muted">Never lets go. Flickers the gripper to collect both rewards.</p></div>
+  <h2>What I tried first</h2>
+  <div class="row" style="gap:50px;margin-top:6px">
+    <div class="frag grow">
+      <div class="vid"><video src="videos/fail_push_not_lift.mp4" poster="videos/fail_push_not_lift.jpg" muted loop playsinline preload="auto"></video></div>
+      <h3 style="margin-top:22px">Reward: get the cube closer to the goal</h3><p class="small muted">It pushes the cube instead of lifting it.</p>
     </div>
-    <div class="frag" style="display:flex;gap:20px;align-items:center">
-      <div class="vid" style="width:440px;flex:none"><video src="videos/fail_push_not_lift.mp4" poster="videos/fail_push_not_lift.jpg" muted loop playsinline preload="auto"></video></div>
-      <div><h3 style="font-size:26px">Pay for getting closer to the goal</h3><p class="small muted">Pushes it instead of lifting.</p></div>
-    </div>
-    <div class="frag" style="display:flex;gap:20px;align-items:center">
-      <div class="vid" style="width:440px;flex:none"><video src="videos/fail_hold_up.mp4" poster="videos/fail_hold_up.jpg" muted loop playsinline preload="auto"></video></div>
-      <div><h3 style="font-size:26px">Play back motions from my clips</h3><p class="small muted">Lifts it and holds it up forever.</p></div>
-    </div>
-    <div class="frag" style="display:flex;gap:20px;align-items:center">
-      <div class="vid" style="width:440px;flex:none"><video src="videos/fail_top_edge.mp4" poster="videos/fail_top_edge.jpg" muted loop playsinline preload="auto"></video></div>
-      <div><h3 style="font-size:26px">First clip reward: hand + cube</h3><p class="small muted">A 2 cm radius I made up. Grabs the top edge, it slips.</p></div>
+    <div class="frag grow">
+      <div class="vid"><video src="videos/fail_hold_up.mp4" poster="videos/fail_hold_up.jpg" muted loop playsinline preload="auto"></video></div>
+      <h3 style="margin-top:22px">Robot plays back motions from my clips</h3><p class="small muted">Too imprecise. Lifts it and holds it up forever.</p>
     </div>
   </div>
-  <p class="frag" style="margin-top:30px"><span class="hl"><b>Every reward I wrote by hand got cheated. So the clips define it.</b></span></p>
+  <p class="frag" style="margin-top:30px"><span class="hl"><b>I was writing the reward by hand, and it got cheated. So the clips define the reward.</b></span></p>
   <aside class="notes"><ul>
-    <li>1. Hand-written, staged reward: pay for holding, pay for success. It parked the gripper right at the threshold and flickered, collecting both. "Placed" 99.6%, real success 0. (Before that: it hovered over the goal forever, because lowering lost the holding reward.)</li>
-    <li>2. Pay for the cube being close to the goal, held or not. It shoved it onto the target. Half my "98% success" were pushes. I only caught it by watching the videos.</li>
-    <li>3. A vocabulary of 2-second motions from my clips, RL picks which to play. Picked the cube up and held it until time ran out. Stacking ~1% vs 98% with plain actions. And I was still writing the reward, so the clips weren't really doing anything.</li>
-    <li>4. First reward from the clips: follow my hand and the cube. A 2 cm "arrived" radius that I invented, not from the clips, let the hand stop on the top edge. Pick-up 0. Every number I make up is a loophole, so: object only.</li>
-    <li>Also: reward only at the finish, 0 reward in 254 iterations. Object only with no path for the hand, nothing learned in 504 iterations.</li>
-    <li>Lesson: you only catch these by watching videos. Every cheat looked like progress on the curve.</li>
+    <li>Left: a hand-written reward, "pay for the cube being close to the goal". Shoving is easier than grasping, so it pushed it onto the target. Half my "98% success" were pushes; I only caught it by watching the videos.</li>
+    <li>Right: my first plan for the clips. Learn a small set of motions from them (lift, put down, push, about 2 seconds each), and let RL choose which motion to play, instead of moving the arm directly. The motions play blind, no correction mid-motion, so they're too imprecise: stacking worked about 1% of the time vs 98% with normal arm control. Here it lifted the cube and never put it down.</li>
+    <li>And the bigger problem: I was still writing the reward. The clips only decided how the arm moved, not what success means. So I flipped it: the clips define the reward, and the robot moves however it likes.</li>
   </ul></aside>
 </section>
 
