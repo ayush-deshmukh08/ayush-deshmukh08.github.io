@@ -489,15 +489,162 @@ tr.hero td{font-weight:700}
     <div class="frag grow" style="display:flex;flex-direction:column">
       <h3>Longer, with no memory</h3>
       <div class="vid"><video src="videos/wd_no_memory.mp4" poster="videos/wd_no_memory.jpg" muted loop playsinline preload="auto"></video></div>
-      <p style="margin-top:14px">4 steps: <b>14</b> · 6 steps: <b>12</b> <span class="small muted">out of 100</span></p>
+      <p style="margin-top:14px">4 steps: <b>1</b> · 6 steps: <b>0</b> <span class="small muted">all steps, in order, out of 100</span></p>
       <p class="small"><span class="hl"><b>It loops. It can’t tell step 2 from step 4.</b></span></p>
     </div>
   </div>
   <aside class="notes"><ul>
     <li>On what it practised, the student is close to the teacher: 94-97 on cube tasks. Cylinder and push are weaker: the can is harder to grasp from images, and push was always the weakest skill.</li>
-    <li>But give it the whole 6-step sentence with no memory and it falls apart: 4 steps 14, 6 steps 12, almost never in order. Watch it: it finishes a pick and place, then does the same pick and place again.</li>
+    <li>But give it the whole sentence with no memory and it falls apart: all steps in order, 4 steps 1, 6 steps 0 (it gets the end result right 14 and 12 times, but never in order). Watch it: it finishes a pick and place, then does the same pick and place again.</li>
     <li>Why: the teacher was told which step it's on. The student only has the camera, and after step 2 the table can look exactly like after step 4. The skills transferred. The bookkeeping didn't.</li>
-    <li>Honest: the left table is the final student (it has the memory marks, which barely matter at 1-2 commands); 14 and 12 are from an earlier student with the whole sentence and no memory.</li><li>Next: memory.</li>
+    <li>Honest: the left table is the final student (it has the memory marks, which barely matter at 1-2 commands); 1 and 0 are from an earlier student with the whole sentence and no memory.</li><li>Next: memory.</li>
+  </ul></aside>
+</section>
+
+<section class="step" data-sec="Memory" data-t="70">
+  <div class="kicker">Step 5 · Memory · H3</div>
+  <h2>How does it know which step it’s on?</h2>
+  <div class="row" style="gap:40px;margin-top:0;align-items:flex-start">
+    <div class="grow">
+      <table style="width:100%">
+        <tr><th>What I gave it</th><th style="text-align:right">4 steps</th><th style="text-align:right">6 steps</th></tr>
+        <tr class="frag"><td>Nothing, just the whole sentence</td><td style="text-align:right"><b>1</b></td><td style="text-align:right"><b>0</b></td></tr>
+        <tr class="frag"><td>Older camera frames and its past actions</td><td style="text-align:right"><b>≈0</b></td><td style="text-align:right"><b>≈0</b></td></tr>
+        <tr class="frag"><td>One command at a time, from a script</td><td style="text-align:right"><b>65</b></td><td style="text-align:right"><b>38</b></td></tr>
+        <tr class="frag"><td>A counter: “k steps done”</td><td style="text-align:right"><b>42</b></td><td style="text-align:right"><b>0</b></td></tr>
+        <tr class="frag " style="background:var(--accent)"><td>Its own “(done)” marks in the sentence</td><td style="text-align:right"><b>81</b></td><td style="text-align:right"><b>40</b></td></tr>
+      </table>
+      <p class="small muted" style="margin-top:12px">All steps done, in order, out of 100 · only the last row is the final model</p>
+    </div>
+    <div style="width:420px;flex:none;display:flex;flex-direction:column;gap:16px">
+      <div><div class="vid" style="width:100%"><video src="videos/wd_one_command.mp4" poster="videos/wd_one_command.jpg" muted loop playsinline preload="auto"></video></div><div class="cap" style="margin-top:6px;font-size:19px">Script: its “done” fires early, the script runs ahead</div></div>
+      <div><div class="vid" style="width:100%"><video src="videos/wd_number.mp4" poster="videos/wd_number.jpg" muted loop playsinline preload="auto"></video></div><div class="cap" style="margin-top:6px;font-size:19px">Counter: reaches 5 of 6, never 6</div></div>
+    </div>
+  </div>
+  <aside class="notes"><ul>
+    <li>Why it needs memory at all: in the 6-step task the arm reaches for the cube in step 1 and again in step 3, and the table looks almost the same. After step 4 it looks exactly like a finished 4-step task. The camera can't tell you where you are.</li>
+    <li>Nothing extra: it keeps redoing the start. 1 and 0.</li>
+    <li>Old frames and past actions: a frame from a second ago doesn't say which step that was either. About 0.</li>
+    <li>A script that feeds one command at a time and moves on when the model says "done": 65 / 38. It works, but the memory sits in the script, outside the model. That's a planner, and it doesn't answer my question.</li>
+    <li>A counter "k done" in the input: fine on short tasks (42), but it never saw k = 5 in training, so 6 steps is 0. A number it never saw means nothing to it.</li>
+    <li>The "(done)" marks written into its own sentence: 81 / 40. Best of all, beats the script, and the memory stays in the model's own input.</li>
+  </ul></aside>
+</section>
+
+<section class="step" data-sec="Memory" data-t="75">
+  <div class="kicker">Step 5 · Memory</div>
+  <h2>It writes its own memory into the sentence</h2>
+  <div class="row" style="gap:16px;margin-top:4px;align-items:stretch">
+    <div class="card grow" style="padding:16px 20px"><h3 style="font-size:26px">1 · Read</h3><p class="small">Both cameras + the sentence</p></div>
+    <div style="align-self:center;font-size:30px;font-weight:700">→</div>
+    <div class="card grow" style="padding:16px 20px"><h3 style="font-size:26px">2 · Act</h3><p class="small">Move, turn, grip</p><p class="small muted" style="font-size:19px">+ one extra output: “is this step done?”</p></div>
+    <div style="align-self:center;font-size:30px;font-weight:700">→</div>
+    <div class="card grow" style="padding:16px 20px;background:var(--accent)"><h3 style="font-size:26px">3 · Mark</h3><p class="small">Above 0.85 for 0.5 s → write “(done)”</p></div>
+  </div>
+  <div class="card frag" style="margin-top:26px;padding:18px 26px">
+    <p class="sent" style="font-size:27px"><span class="d">pick up the cube</span><span class="tag">done</span>, then <span class="d">put the cube on the cylinder</span><span class="tag">done</span>, then <span class="now">pick up the cube</span>, then put the cube on the target, then …</p>
+    <p class="small muted" style="margin-top:6px">The first command without a mark is the one to do.</p>
+  </div>
+  <div class="row frag" style="gap:30px;margin-top:22px">
+    <div class="grow"><div><div class="vid" style="width:540px"><video src="videos/nomarks_stuck.mp4" poster="videos/nomarks_stuck.jpg" muted loop playsinline preload="auto"></video></div><div class="cap" style="margin-top:6px;font-size:19px">Marks switched off: stuck on command one (3×)</div></div></div>
+    <div class="grow"><div><div class="vid" style="width:540px"><video src="videos/restack_6of6.mp4" poster="videos/restack_6of6.jpg" muted loop playsinline preload="auto"></video></div><div class="cap" style="margin-top:6px;font-size:19px">Its own marks: all six in order (3×)</div></div></div>
+  </div>
+  <aside class="notes"><ul>
+    <li>The model gets one extra output next to the arm motion: "is the current step done?". In training it's 1 for the last half-second of each command, the moment before the teacher moved on.</li>
+    <li>At test time, when that output stays above 0.85 for half a second, the word "(done)" is written after the current command, and the model reads the new sentence on its next step. The first unmarked command is what to do.</li>
+    <li>So the memory is text, in the model's own input. No planner, no counter from outside, nothing from the simulator.</li>
+    <li>Why text and not a number: the model is a vision-language model; it already reads sentences. "(done)" next to a command is something it can attend to directly. A count had to be learned for every value.</li>
+    <li>Why 0.85 and 0.5 s: a single spike shouldn't move it on; it must be sure, for a while.</li>
+  </ul></aside>
+</section>
+
+<section class="step" data-sec="Memory" data-t="70">
+  <div class="kicker">Step 5 · Memory</div>
+  <h2>Training it: hide the real commands in a long sentence</h2>
+  <p class="small muted" style="margin-top:-12px">Episodes have 1–2 real commands. Test sentences have up to 8.</p>
+  <div class="card" style="margin-top:18px;padding:18px 24px">
+    <div><span style="display:inline-block;padding:6px 12px;border:2px solid var(--ink);border-radius:6px;margin:4px 4px 4px 0;font-size:22px;background:var(--frame);color:var(--muted)">push the cube (done)</span><span style="display:inline-block;padding:6px 12px;border:2px solid var(--ink);border-radius:6px;margin:4px 4px 4px 0;font-size:22px;background:var(--frame);color:var(--muted)">pick up the cylinder (done)</span><span style="display:inline-block;padding:6px 12px;border:2px solid var(--ink);border-radius:6px;margin:4px 4px 4px 0;font-size:22px;background:var(--frame);color:var(--muted)">put the cylinder on the cube (done)</span><span style="display:inline-block;padding:6px 12px;border:2px solid var(--ink);border-radius:6px;margin:4px 4px 4px 0;font-size:22px;background:var(--accent)"><b>pick up the cube</b></span><span style="display:inline-block;padding:6px 12px;border:2px solid var(--ink);border-radius:6px;margin:4px 4px 4px 0;font-size:22px;background:var(--accent)"><b>put the cube on the target</b></span><span style="display:inline-block;padding:6px 12px;border:2px solid var(--ink);border-radius:6px;margin:4px 4px 4px 0;font-size:22px;background:var(--frame);color:var(--muted)">pick up the cylinder</span></div>
+    <p class="small muted" style="margin-top:8px"><span style="background:var(--frame);padding:0 6px">grey</span> = random padding, already marked · <span style="background:var(--accent);padding:0 6px">yellow</span> = what the teacher really did</p>
+  </div>
+  <div class="row" style="gap:30px;margin-top:26px;align-items:stretch">
+    <div class="card frag grow"><h3>Padding up to 3 in front</h3><p class="small muted">Never saw the current command at position 6</p><p style="margin-top:8px">6 steps: <b>5</b></p></div>
+    <div class="card frag grow" style="background:var(--accent)"><h3>Up to 10, every position equally often</h3><p class="small">The final recipe</p><p style="margin-top:8px">6 steps: <b>40</b></p></div>
+    <div class="card frag grow"><h3>Up to 20</h3><p class="small muted">Too long: short tasks get worse</p><p style="margin-top:8px">Cube on cylinder: 75 → <b>42</b></p></div>
+  </div>
+  <aside class="notes"><ul>
+    <li>The problem: the teacher only ever did one or two commands, but I test on up to eight. If the training sentences are short, the model never sees "do command number 6".</li>
+    <li>So I don't record longer episodes. I make the text longer: random commands before the real ones, already marked "(done)", and a few after. The arm only ever did the yellow part.</li>
+    <li>The number of fake commands in front is random, chosen so the real command sits at every position from 1 to 10 equally often.</li>
+    <li>With at most 3 in front, position 6 never appeared, and the 6-step task scored 5. Up to 10 evenly: 40. Up to 20 was too much: the short tasks dropped (cube on cylinder 75 to 42). Numbers out of 100, all steps in order, earlier versions except the final 40.</li>
+    <li>Done label: 1 on the last 0.5 s of each command, 0 elsewhere.</li>
+  </ul></aside>
+</section>
+
+<section class="step" data-sec="Memory" data-t="50">
+  <div class="kicker">Step 5 · Memory</div>
+  <h2>Does it really use its marks?</h2>
+  <div class="row" style="gap:30px;margin-top:6px;align-items:stretch">
+    <div class="card frag grow"><h3>Marks switched off</h3><p class="small muted">4-step task</p><p class="big" style="margin-top:12px">0 <span style="font-size:28px">/ 50</span></p><p class="small" style="margin-top:8px">Never finishes</p></div>
+    <div class="card frag grow"><h3>First two marks written in advance</h3><p class="small muted">4-step task</p><p class="big" style="margin-top:12px">42 <span style="font-size:28px">/ 50</span></p><p class="small" style="margin-top:8px">Skips straight to step 3 and finishes</p></div>
+  </div>
+  <div class="row frag" style="gap:30px;margin-top:26px">
+    <div class="grow"><div><div class="vid" style="width:600px"><video src="videos/knock_refetch.mp4" poster="videos/knock_refetch.jpg" muted loop playsinline preload="auto"></video></div><div class="cap" style="margin-top:6px;font-size:19px">I knock the cube away after it’s done: it goes back for it (2×)</div></div></div>
+    <div class="grow"><div><div class="vid" style="width:600px"><video src="videos/drop_repick.mp4" poster="videos/drop_repick.jpg" muted loop playsinline preload="auto"></video></div><div class="cap" style="margin-top:6px;font-size:19px">Dropped mid-carry: it picks it up again (2×)</div></div></div>
+  </div>
+  <aside class="notes"><ul>
+    <li>A causal test, on an earlier model with the same recipe. Switch the marking off: the 4-step task never finishes, 0 of 50. Write the first two marks in advance: it skips to step 3 and finishes 42 of 50. So the marks are what it follows, not a side effect.</li>
+    <li>And it isn't just replaying a script: knock the object away after it was placed, or make it drop it, and it goes back and redoes the step, because the image still drives the action.</li>
+  </ul></aside>
+</section>
+
+<section class="step" data-sec="Results" data-t="70">
+  <div class="kicker">Results · H2 + H3</div>
+  <h2>Trained on at most two. Asked for more.</h2>
+  <div class="row" style="gap:40px;margin-top:4px;align-items:flex-start">
+    <div class="grow">
+      <table style="width:100%">
+        <tr><th>Steps in the sentence</th><th style="text-align:right">3</th><th style="text-align:right">4</th><th style="text-align:right">6</th><th style="text-align:right">8</th></tr>
+        <tr><td>Student (cameras + sentence)</td><td style="text-align:right"><b>62</b></td><td style="text-align:right"><b>81</b></td><td style="text-align:right"><b>40</b></td><td style="text-align:right"><b>0</b></td></tr>
+        <tr><td class="muted">Teacher (sees everything)</td><td class="muted" style="text-align:right">94</td><td class="muted" style="text-align:right">100</td><td class="muted" style="text-align:right">94</td><td class="muted" style="text-align:right">100</td></tr>
+      </table>
+      <p class="small muted" style="margin-top:10px">All steps done, in order, out of 100 new layouts</p>
+      <div class="card frag" style="margin-top:22px;padding:16px 22px">
+        <h3 style="font-size:26px">The same 6-step model, four checks</h3>
+        <p class="small">strict <b>12</b> · teacher’s own check <b>24</b> · loose <b>40</b> · lenient <b>49</b></p>
+        <p class="small muted" style="font-size:19px">How strictly “placed” is judged changes the number a lot.</p>
+      </div>
+    </div>
+    <div style="width:480px;flex:none"><div><div class="vid" style="width:100%"><video src="videos/unstack_4of4.mp4" poster="videos/unstack_4of4.jpg" muted loop playsinline preload="auto"></video></div><div class="cap" style="margin-top:6px;font-size:19px">4 steps, never seen as a whole (2×)</div></div></div>
+  </div>
+  <aside class="notes"><ul>
+    <li>Every number here is a sentence it never saw as a whole. 3 steps 62, 4 steps 81, 6 steps 40. The teacher does 94-100, so the skills and hand-offs are there; the gap is the student's bookkeeping.</li>
+    <li>H2: skills compose, up to a point. H3: memory in the sentence works, and it's the bottleneck.</li>
+    <li>Why 3 steps (62) is lower than 4 (81): the 3-step task starts with a push, the weakest skill.</li>
+    <li>Be upfront: the same 6-step model is 12 under the strictest check (object within 1.5 cm of resting height), 24 with the teacher's own done check, 40 loose, 49 lenient (end result right, order not checked). I quote the loose one and say so.</li>
+  </ul></aside>
+</section>
+
+<section class="step" data-sec="Results" data-t="70">
+  <div class="kicker">Where it breaks</div>
+  <h2>8 steps: 0. It stops after four.</h2>
+  <div class="row" style="gap:40px;margin-top:4px;align-items:flex-start">
+    <div style="width:640px;flex:none"><div><div class="vid" style="width:100%"><video src="videos/restack8_marks_race.mp4" poster="videos/restack8_marks_race.jpg" muted loop playsinline preload="auto"></video></div><div class="cap" style="margin-top:6px;font-size:19px">The marks run to 8 of 8 while only 4 are done</div></div></div>
+    <div class="grow">
+      <p>In <b>60 of 100</b> runs: exactly 4 steps done, all 8 marked.</p>
+      <p class="small muted" style="margin-top:10px">After step 4 the table looks exactly like a finished 4-step task.</p>
+      <p style="margin-top:20px"><span class="hl"><b>“Done” reads the image, not the sentence.</b></span></p>
+      <div class="card frag" style="margin-top:22px;padding:16px 22px">
+        <h3 style="font-size:26px">6 steps: where the failures are</h3>
+        <p class="small">Step 5, pick up the cylinder: <b>25</b> · step 4: <b>15</b> · step 2: <b>13</b></p>
+        <p class="small muted" style="font-size:19px">Two causes: marking too early, and the cylinder (the weakest object)</p>
+      </div>
+    </div>
+  </div>
+  <aside class="notes"><ul>
+    <li>The 8-step sentence is stack and unstack, twice. After four steps the scene is identical to the end of the 4-step task. The done output fires on "object lifted and held still" whatever the current command is, so the marks race ahead to 8 of 8 and it stops. 60 of 100 runs: exactly 4 done, in order.</li>
+    <li>So the memory is only as good as the done signal, and the done signal looks at the picture more than at the sentence.</li>
+    <li>6-step failures: step 5 picking up the cylinder 25, step 4 15, step 2 13; 21 runs knock something over. The cylinder is the weakest object: pick up 59 vs 94 for the cube.</li>
+    <li>What I'd do next: train the done signal on scenes that look done but aren't (the same image under a sentence where the current command is different), longer real episodes so it learns from its own long runs (DAgger), and a release check so "done" means let go.</li>
   </ul></aside>
 </section>
 
