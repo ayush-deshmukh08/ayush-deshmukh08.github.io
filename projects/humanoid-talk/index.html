@@ -389,47 +389,6 @@ tr.hero td{font-weight:700}
   </ul></aside>
 </section>
 
-<section class="step" data-sec="Teacher" data-t="75">
-  <div class="kicker">Step 3 · The teacher</div>
-  <h2>The training loop</h2>
-  <svg width="1600" height="900" viewBox="0 0 1600 900" style="position:absolute;left:0;top:0;pointer-events:none;color:var(--ink)">
-    <defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs>
-    <g fill="none" stroke="currentColor" stroke-width="3.5" marker-end="url(#ah)">
-      <path d="M330,392 Q330,300 567,300"/>
-      <path d="M1033,300 Q1270,300 1270,392"/>
-      <path d="M1270,618 Q1270,715 1033,715"/>
-      <path d="M567,715 Q330,715 330,618"/>
-    </g>
-  </svg>
-  <div class="card frag" style="position:absolute;left:105px;top:400px;width:450px;height:210px;padding:14px 20px">
-    <div style="display:flex;gap:12px;align-items:baseline"><div style="width:34px;height:34px;border-radius:50%;background:var(--accent);border:3px solid var(--ink);font-weight:800;font-size:17px;line-height:28px;text-align:center;flex:none;align-self:center">1</div><h3 style="margin:0;font-size:27px">Reset</h3><span class="muted" style="font-size:18px">per robot, when done</span></div>
-    <ul style="margin:8px 0 0;padding-left:22px;display:flex;flex-direction:column;gap:4px"><li style="font-size:20px;line-height:1.3">Random object spots and arm pose</li><li style="font-size:20px;line-height:1.3">1–2 commands, in an order that makes sense</li><li style="font-size:20px;line-height:1.3">10% start already stacked</li></ul>
-  </div>
-  <div class="card frag" style="position:absolute;left:575px;top:195px;width:450px;height:210px;padding:14px 20px">
-    <div style="display:flex;gap:12px;align-items:baseline"><div style="width:34px;height:34px;border-radius:50%;background:var(--accent);border:3px solid var(--ink);font-weight:800;font-size:17px;line-height:28px;text-align:center;flex:none;align-self:center">2</div><h3 style="margin:0;font-size:27px">Act</h3><span class="muted" style="font-size:18px">16,384 robots, 10 Hz</span></div>
-    <ul style="margin:8px 0 0;padding-left:22px;display:flex;flex-direction:column;gap:4px"><li style="font-size:20px;line-height:1.3">84 numbers in → 5 out: move, turn, grip</li><li style="font-size:20px;line-height:1.3">The arm runs 95% old motion + 5% new</li><li style="font-size:20px;line-height:1.3">Inverse kinematics → joint targets</li></ul>
-  </div>
-  <div class="card frag" style="position:absolute;left:1045px;top:400px;width:450px;height:210px;padding:14px 20px">
-    <div style="display:flex;gap:12px;align-items:baseline"><div style="width:34px;height:34px;border-radius:50%;background:var(--accent);border:3px solid var(--ink);font-weight:800;font-size:17px;line-height:28px;text-align:center;flex:none;align-self:center">3</div><h3 style="margin:0;font-size:27px">Score</h3><span class="muted" style="font-size:18px">every step</span></div>
-    <ul style="margin:8px 0 0;padding-left:22px;display:flex;flex-direction:column;gap:4px"><li style="font-size:20px;line-height:1.3">Hand path, then object path: +1 / checkpoint</li><li style="font-size:20px;line-height:1.3">Done: +5, next command’s path laid on = the hand-off</li><li style="font-size:20px;line-height:1.3">Lifting during a push costs</li></ul>
-  </div>
-  <div class="card frag" style="position:absolute;left:575px;top:610px;width:450px;height:210px;padding:14px 20px">
-    <div style="display:flex;gap:12px;align-items:baseline"><div style="width:34px;height:34px;border-radius:50%;background:var(--accent);border:3px solid var(--ink);font-weight:800;font-size:17px;line-height:28px;text-align:center;flex:none;align-self:center">4</div><h3 style="margin:0;font-size:27px">Update</h3><span class="muted" style="font-size:18px">PPO</span></div>
-    <ul style="margin:8px 0 0;padding-left:22px;display:flex;flex-direction:column;gap:4px"><li style="font-size:20px;line-height:1.3">Better-than-expected actions get likelier</li><li style="font-size:20px;line-height:1.3">524K samples per round, 5 passes</li><li style="font-size:20px;line-height:1.3">Small, clipped steps</li></ul>
-  </div>
-  <div class="frag" style="position:absolute;left:570px;top:440px;width:460px;text-align:center">
-    <div class="big" style="font-size:54px">×1,000</div>
-    <p class="small muted" style="margin-top:8px">≈ 520M steps · under 2 hours · one GPU</p>
-  </div>
-  <aside class="notes"><ul>
-    <li>Reset: each robot gets a new episode when its last one ends (done, or 20 s). Random object positions and a random arm pose. One or two commands, always in an order that makes sense: with an empty hand it can only pick up or push; after "pick up X" comes "put X" on the target or on the other object; after a push comes a pick-up. 10% start with one object stacked on the other, so it practises unstacking.</li>
-    <li>Act: the 84-number observation goes into a small network, 5 numbers come out: move the hand x, y, z, turn it, open or close. The arm doesn't jump to that: it keeps 95% of its previous motion and takes 5% of the new one, so the motion is smooth enough for the student to copy later. Inverse kinematics turns the hand target into joint angles.</li>
-    <li>Score: first the hand's path to the object, then the object's path to the goal, about +1 per checkpoint. When a command is done, +5, and the next command's path is laid on from wherever the object is now. That's the hand-off, and it's the only place hand-offs are learned. Lifting during a push is penalised.</li>
-    <li>Update: PPO. Actions that did better than the critic expected become more likely, worse ones less likely. 524K samples per round, 5 passes, clipped so each update is small.</li>
-    <li>Then act again. 1,000 rounds, about 520 million steps, under 2 hours on one GPU.</li>
-  </ul></aside>
-</section>
-
 <div id="blank"></div>
 <div id="foot"><div id="secs"></div><div id="count"></div></div>
 </div>
